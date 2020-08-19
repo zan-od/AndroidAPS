@@ -274,6 +274,13 @@ public class PodHistoryActivity extends NoSplashAppCompatActivity {
                     }
                     break;
 
+                    case CancelBolus: {
+                        if (historyEntry.getData() != null) {
+                            valueView.setText(historyEntry.getData());
+                        }
+                    }
+                    break;
+
                     case GetPodStatus:
                     case GetPodInfo:
                     case SetTime:
@@ -281,7 +288,6 @@ public class PodHistoryActivity extends NoSplashAppCompatActivity {
                     case CancelTemporaryBasal:
                     case CancelTemporaryBasalForce:
                     case ConfigureAlerts:
-                    case CancelBolus:
                     case DeactivatePod:
                     case ResetPodState:
                     case AcknowledgeAlerts:
