@@ -37,10 +37,13 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
             type.setText(PodHistoryEntryType.getByCode(record.podEntryTypeCode).resourceId)
             value.text = description(record)
 
-            if (PodHistoryEntryType.getByCode(record.podEntryTypeCode) == PodHistoryEntryType.PairAndPrime) {
-                layout.background.setColorFilter(Color.parseColor("#8000ff00"), PorterDuff.Mode.OVERLAY)
-            } else {
-                layout.background.colorFilter = standardBackgroundColorFilter
+            when {
+                !record.isSuccess ->
+                    layout.background.setColorFilter(Color.parseColor("#80ff0000"), PorterDuff.Mode.OVERLAY)
+                PodHistoryEntryType.getByCode(record.podEntryTypeCode) == PodHistoryEntryType.PairAndPrime ->
+                    layout.background.setColorFilter(Color.parseColor("#8000ff00"), PorterDuff.Mode.OVERLAY)
+                else ->
+                    layout.background.colorFilter = standardBackgroundColorFilter
             }
         }
     }
