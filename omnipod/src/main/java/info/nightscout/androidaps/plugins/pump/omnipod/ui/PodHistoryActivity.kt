@@ -34,7 +34,8 @@ class PodHistoryActivity @Inject constructor() : NoSplashAppCompatActivity() {
             .toObservable(EventOmnipodHistoryItemClicked::class.java)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Toast.makeText(this,"Clicked: " + it.record.date, Toast.LENGTH_SHORT).show()
+                val detailFragment = PodHistoryDetailFragment.newInstance(it.record)
+                detailFragment.show(supportFragmentManager,detailFragment.tag)
             }, { fabricPrivacy.logException(it) })
     }
 

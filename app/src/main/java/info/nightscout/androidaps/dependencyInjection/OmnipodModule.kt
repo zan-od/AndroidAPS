@@ -16,6 +16,7 @@ import info.nightscout.androidaps.plugins.pump.omnipod.ui.wizard.initpod.InitPod
 import info.nightscout.androidaps.plugins.pump.omnipod.ui.wizard.pages.InitPodRefreshAction
 import info.nightscout.androidaps.plugins.pump.omnipod.ui.wizard.pages.PodInfoFragment
 import info.nightscout.androidaps.plugins.pump.omnipod.ui.wizard.removepod.RemoveActionFragment
+import info.nightscout.androidaps.plugins.pump.omnipod.ui.PodHistoryDetailFragment
 import info.nightscout.androidaps.plugins.pump.omnipod.ui.PodHistoryListFragment
 
 @Module
@@ -32,6 +33,7 @@ abstract class OmnipodModule {
     @ContributesAndroidInjector abstract fun removeActionFragment(): RemoveActionFragment
     @ContributesAndroidInjector abstract fun podInfoFragment(): PodInfoFragment
     @ContributesAndroidInjector abstract fun podHistoryListFragment(): PodHistoryListFragment
+    @ContributesAndroidInjector abstract fun podHistoryDetailFragment(): PodHistoryDetailFragment
 
     // Service
     @ContributesAndroidInjector
