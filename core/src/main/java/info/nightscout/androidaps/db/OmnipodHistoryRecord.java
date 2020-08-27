@@ -3,13 +3,15 @@ package info.nightscout.androidaps.db;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 import info.nightscout.androidaps.plugins.pump.common.utils.DateTimeUtil;
 
 /**
  * Created by andy on 30.11.2019.
  */
 @DatabaseTable(tableName = "PodHistory")
-public class OmnipodHistoryRecord implements DbObjectBase, Comparable<OmnipodHistoryRecord> {
+public class OmnipodHistoryRecord implements DbObjectBase, Comparable<OmnipodHistoryRecord>, Serializable {
 
     @DatabaseField(id = true)
     public long date;
