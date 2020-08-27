@@ -1,90 +1,46 @@
 package info.nightscout.androidaps.plugins.pump.omnipod.ui
 
 import android.os.Bundle
-import android.view.View
-import android.widget.Spinner
-import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import info.nightscout.androidaps.activities.NoSplashAppCompatActivity
-import info.nightscout.androidaps.db.OmnipodHistoryRecord
-import info.nightscout.androidaps.interfaces.DatabaseHelperInterface
 import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.plugins.pump.common.defs.PumpHistoryEntryGroup
-import info.nightscout.androidaps.plugins.pump.omnipod.data.OmnipodHistoryRecordDataSource
-import info.nightscout.androidaps.plugins.pump.omnipod.manager.AapsPodStateManager
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.pump.omnipod.R
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.plugins.pump.omnipod.databinding.OmnipodPodHistoryActivityBinding
+import info.nightscout.androidaps.plugins.pump.omnipod.event.EventOmnipodHistoryItemClicked
+import info.nightscout.androidaps.utils.FabricPrivacy
+import info.nightscout.androidaps.utils.extensions.plusAssign
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class PodHistoryActivity : NoSplashAppCompatActivity() {
+class PodHistoryActivity @Inject constructor() : NoSplashAppCompatActivity() {
 
     @Inject lateinit var aapsLogger: AAPSLogger
-    @Inject lateinit var resourceHelper: ResourceHelper
-    @Inject lateinit var databaseHelper: DatabaseHelperInterface
-    @Inject lateinit var podStateManager: AapsPodStateManager
-    @Inject lateinit var omnipodHistoryRecordsAdapter: OmnipodHistoryRecordsAdapter
+    @Inject lateinit var rxBus: RxBusWrapper
+    @Inject lateinit var fabricPrivacy: FabricPrivacy
 
-    private var historyTypeSpinner: Spinner? = null
-    //private var statusView: TextView? = null
-    //private var recyclerView: RecyclerView? = null
-    //private var linearLayoutManager: LinearLayoutManager? = null
-
-    //var showingType: OldPodHistoryActivity.TypeList? = null
-    var selectedGroup = PumpHistoryEntryGroup.All
-    var fullHistoryList: List<OmnipodHistoryRecord> = ArrayList()
-    var filteredHistoryList: List<OmnipodHistoryRecord> = ArrayList()
-
-    var manualChange = false
-
-    //var typeListFull: List<OldPodHistoryActivity.TypeList>? = null
+    private var disposables: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.omnipod_pod_history_activity)
-        historyTypeSpinner = findViewById(R.id.omnipod_historytype)
-        val statusView : TextView = findViewById(R.id.omnipod_historystatus)
-        val recyclerView : RecyclerView = findViewById(R.id.omnipod_history_recyclerview)
-        recyclerView.setHasFixedSize(true)
-        //linearLayoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        //recyclerViewAdapter = OldPodHistoryActivity.RecyclerViewAdapter(filteredHistoryList)
-        recyclerView.adapter = omnipodHistoryRecordsAdapter
-        recyclerView.addItemDecoration(DividerItemDecoration(recyclerView.context,DividerItemDecoration.VERTICAL))
-        statusView.visibility = View.GONE
+        DataBindingUtil.setContentView<OmnipodPodHistoryActivityBinding>(this, R.layout.omnipod_pod_history_activity)
+    }
 
-        val dataSourceFactory = object : DataSource.Factory<Long,OmnipodHistoryRecord>() {
-            override fun create(): DataSource<Long, OmnipodHistoryRecord> {
-                return OmnipodHistoryRecordDataSource(databaseHelper,aapsLogger)
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        disposables += rxBus
+            .toObservable(EventOmnipodHistoryItemClicked::class.java)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Toast.makeText(this,"Clicked: " + it.record.date, Toast.LENGTH_SHORT).show()
+            }, { fabricPrivacy.logException(it) })
+    }
 
-        val records = LivePagedListBuilder(dataSourceFactory, PagedList.Config.Builder().setPageSize(30).build()).build()
-
-        records.observe(this, Observer<PagedList<OmnipodHistoryRecord>>{ pagedList -> omnipodHistoryRecordsAdapter.submitList(pagedList) } )
-
-        // typeListFull = getTypeList(PumpHistoryEntryGroup.getTranslatedList(resourceHelper))
-        // // val spinnerAdapter = ArrayAdapter(this, R.layout.spinner_centered, typeListFull)
-        // historyTypeSpinner.setAdapter(spinnerAdapter)
-        // historyTypeSpinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-        //     override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-        //         if (manualChange) return
-        //         val selected = historyTypeSpinner.getSelectedItem() as OldPodHistoryActivity.TypeList
-        //         OldPodHistoryActivity.showingType = selected
-        //         OldPodHistoryActivity.selectedGroup = selected.entryGroup
-        //         filterHistory(OldPodHistoryActivity.selectedGroup)
-        //     }
-        //
-        //     override fun onNothingSelected(parent: AdapterView<*>?) {
-        //         if (manualChange) return
-        //         filterHistory(PumpHistoryEntryGroup.All)
-        //     }
-        // })
+    override fun onPause() {
+        super.onPause()
+        disposables.clear()
     }
 
 }

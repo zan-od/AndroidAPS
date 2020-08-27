@@ -5,6 +5,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import info.nightscout.androidaps.db.OmnipodHistoryRecord
 import info.nightscout.androidaps.logging.AAPSLogger
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.pump.omnipod.util.AapsOmnipodUtil
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import javax.inject.Inject
@@ -14,13 +15,14 @@ class OmnipodHistoryRecordsAdapter @Inject constructor() : PagedListAdapter<Omni
     @Inject lateinit var aapsLogger: AAPSLogger
     @Inject lateinit var resourceHelper: ResourceHelper
     @Inject lateinit var aapsOmnipodUtil: AapsOmnipodUtil
+    @Inject lateinit var rxBus: RxBusWrapper
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OmnipodHistoryRecordViewHolder {
-        return OmnipodHistoryRecordViewHolder.create(parent ,aapsLogger, aapsOmnipodUtil, resourceHelper)
+        return OmnipodHistoryRecordViewHolder.create(parent ,aapsLogger, aapsOmnipodUtil, resourceHelper, rxBus)
     }
 
     override fun onBindViewHolder(holder: OmnipodHistoryRecordViewHolder, position: Int) {
-        val record: OmnipodHistoryRecord? = getItem(position)
+        val record: OmnipodHistoryRecord = getItem(position)!!
         holder.bind(record)
     }
 

@@ -12,15 +12,17 @@ import info.nightscout.androidaps.data.Profile
 import info.nightscout.androidaps.db.OmnipodHistoryRecord
 import info.nightscout.androidaps.logging.AAPSLogger
 import info.nightscout.androidaps.logging.LTag
+import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.pump.common.data.TempBasalPair
 import info.nightscout.androidaps.plugins.pump.common.defs.PumpType
 import info.nightscout.androidaps.plugins.pump.common.utils.ProfileUtil
 import info.nightscout.androidaps.plugins.pump.omnipod.R
 import info.nightscout.androidaps.plugins.pump.omnipod.definition.PodHistoryEntryType
+import info.nightscout.androidaps.plugins.pump.omnipod.event.EventOmnipodHistoryItemClicked
 import info.nightscout.androidaps.plugins.pump.omnipod.util.AapsOmnipodUtil
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 
-class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val aapsOmnipodUtil: AapsOmnipodUtil, val resourceHelper: ResourceHelper) : RecyclerView.ViewHolder(view) {
+class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val aapsOmnipodUtil: AapsOmnipodUtil, val resourceHelper: ResourceHelper, val rxBus: RxBusWrapper) : RecyclerView.ViewHolder(view) {
 
     private val time: TextView = view.findViewById(R.id.omnipod_history_time)
     private val type: TextView = view.findViewById(R.id.omnipod_history_source)
@@ -29,6 +31,15 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
     private val standardBackgroundColorFilter = view.background.colorFilter
 
     private var record: OmnipodHistoryRecord? = null
+
+    init {
+        itemView.setOnClickListener {
+            val record = this.record
+            record?.let {
+                rxBus.send(EventOmnipodHistoryItemClicked(record))
+            }
+        }
+    }
 
     fun bind(record: OmnipodHistoryRecord?) {
         this.record = record
@@ -40,7 +51,7 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
             when {
                 !record.isSuccess ->
                     layout.background.setColorFilter(Color.parseColor("#80ff0000"), PorterDuff.Mode.OVERLAY)
-                PodHistoryEntryType.getByCode(record.podEntryTypeCode) == PodHistoryEntryType.PairAndPrime ->
+                PodHistoryEntryType.getByCode(record.podEntryTypeCode) == PodHistoryEntryType.PAIR_AND_PRIME ->
                     layout.background.setColorFilter(Color.parseColor("#8000ff00"), PorterDuff.Mode.OVERLAY)
                 else ->
                     layout.background.colorFilter = standardBackgroundColorFilter
@@ -51,15 +62,15 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
     private fun description(record: OmnipodHistoryRecord) : String {
         if (record.isSuccess) {
             return when (PodHistoryEntryType.getByCode(record.podEntryTypeCode)) {
-                PodHistoryEntryType.SetTemporaryBasal -> {
+                PodHistoryEntryType.SET_TEMPORARY_BASAL -> {
                     val tempBasalPair: TempBasalPair = aapsOmnipodUtil.gsonInstance.fromJson(record.data, TempBasalPair::class.java)
                     resourceHelper.gs(R.string.omnipod_cmd_tbr_value, tempBasalPair.insulinRate, tempBasalPair.durationMinutes)
                 }
 
-                PodHistoryEntryType.FillCannulaSetBasalProfile,
-                PodHistoryEntryType.SetBasalSchedule  -> profileValue(record.data)
+                PodHistoryEntryType.FILL_CANNULA_SET_BASAL_PROFILE,
+                PodHistoryEntryType.SET_BASAL_SCHEDULE -> profileValue(record.data)
 
-                PodHistoryEntryType.SetBolus          -> {
+                PodHistoryEntryType.SET_BOLUS -> {
                     if (record.data.contains(";")) {
                         val splitVal = record.data.split(";".toRegex()).toTypedArray()
                         resourceHelper.gs(R.string.omnipod_cmd_bolus_value_with_carbs, java.lang.Double.valueOf(splitVal[0]), java.lang.Double.valueOf(splitVal[1]))
@@ -68,23 +79,23 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
                     }
                 }
 
-                PodHistoryEntryType.PairAndPrime -> {
+                PodHistoryEntryType.PAIR_AND_PRIME -> {
                     resourceHelper.gs(R.string.omnipod_history_new_pod_serial,record.podSerial)
                 }
 
-                PodHistoryEntryType.GetPodStatus,
-                PodHistoryEntryType.GetPodInfo,
-                PodHistoryEntryType.SetTime,
-                PodHistoryEntryType.CancelTemporaryBasal,
-                PodHistoryEntryType.CancelTemporaryBasalForce,
-                PodHistoryEntryType.ConfigureAlerts,
-                PodHistoryEntryType.CancelBolus,
-                PodHistoryEntryType.DeactivatePod,
-                PodHistoryEntryType.ResetPodState,
-                PodHistoryEntryType.AcknowledgeAlerts,
-                PodHistoryEntryType.SuspendDelivery,
-                PodHistoryEntryType.ResumeDelivery,
-                PodHistoryEntryType.UnknownEntryType  -> ""
+                PodHistoryEntryType.GET_POD_STATUS,
+                PodHistoryEntryType.GET_POD_INFO,
+                PodHistoryEntryType.SET_TIME,
+                PodHistoryEntryType.CANCEL_TEMPORARY_BASAL,
+                PodHistoryEntryType.CANCEL_TEMPORARY_BASAL_BY_DRIVER,
+                PodHistoryEntryType.CONFIGURE_ALERTS,
+                PodHistoryEntryType.CANCEL_BOLUS,
+                PodHistoryEntryType.DEACTIVATE_POD,
+                PodHistoryEntryType.RESET_POD_STATE,
+                PodHistoryEntryType.ACKNOWLEDGE_ALERTS,
+                PodHistoryEntryType.SUSPEND_DELIVERY,
+                PodHistoryEntryType.RESUME_DELIVERY,
+                PodHistoryEntryType.UNKNOWN_ENTRY_TYPE  -> ""
                 else -> ""
             }
         } else {
@@ -109,9 +120,9 @@ class OmnipodHistoryRecordViewHolder(view: View, val aapsLogger: AAPSLogger, val
 
     companion object {
 
-        fun create(parent: ViewGroup, aapsLogger: AAPSLogger, aapsOmnipodUtil: AapsOmnipodUtil, resourceHelper: ResourceHelper) : OmnipodHistoryRecordViewHolder {
+        fun create(parent: ViewGroup, aapsLogger: AAPSLogger, aapsOmnipodUtil: AapsOmnipodUtil, resourceHelper: ResourceHelper, rxBus: RxBusWrapper) : OmnipodHistoryRecordViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.omnipod_pod_history_item, parent, false)
-            return OmnipodHistoryRecordViewHolder(view, aapsLogger, aapsOmnipodUtil, resourceHelper)
+            return OmnipodHistoryRecordViewHolder(view, aapsLogger, aapsOmnipodUtil, resourceHelper, rxBus)
         }
     }
 
