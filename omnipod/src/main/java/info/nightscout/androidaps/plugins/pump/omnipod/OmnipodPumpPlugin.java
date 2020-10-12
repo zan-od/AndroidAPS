@@ -83,7 +83,7 @@ import info.nightscout.androidaps.plugins.pump.omnipod.queue.command.CommandUpda
 import info.nightscout.androidaps.plugins.pump.omnipod.queue.command.OmnipodCustomCommand;
 import info.nightscout.androidaps.plugins.pump.omnipod.queue.command.OmnipodCustomCommandType;
 import info.nightscout.androidaps.plugins.pump.omnipod.rileylink.service.RileyLinkOmnipodService;
-import info.nightscout.androidaps.plugins.pump.omnipod.ui.OmnipodFragment;
+import info.nightscout.androidaps.plugins.pump.omnipod.ui.OmnipodOverviewFragment;
 import info.nightscout.androidaps.plugins.pump.omnipod.util.AapsOmnipodUtil;
 import info.nightscout.androidaps.plugins.pump.omnipod.util.OmnipodAlertUtil;
 import info.nightscout.androidaps.queue.commands.CustomCommand;
@@ -169,11 +169,11 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
     ) {
         super(new PluginDescription() //
                         .mainType(PluginType.PUMP) //
-                        .fragmentClass(OmnipodFragment.class.getName()) //
+                        .fragmentClass(OmnipodOverviewFragment.class.getName()) //
                         .pluginName(R.string.omnipod_name) //
                         .shortName(R.string.omnipod_name_short) //
                         .preferencesId(R.xml.pref_omnipod) //
-                        .description(R.string.description_pump_omnipod), //
+                        .description(R.string.omnipod_pump_description), //
                 injector, aapsLogger, resourceHelper, commandQueue);
         this.aapsLogger = aapsLogger;
         this.rxBus = rxBus;
@@ -319,12 +319,6 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
         return rileyLinkServiceData.rileyLinkServiceState.isReady();
     }
 
-    public boolean needsPodActivation() {
-        // don't use PodStateManager.isActivationCompleted() because that returns false for PodProgressStatus.ACTIVATION_TIME_EXCEEDED
-        // which indicates that the pod should be deactivated rather then activated
-        return !podStateManager.isPodInitialized() || podStateManager.getPodProgressStatus().isBefore(PodProgressStatus.ABOVE_FIFTY_UNITS);
-    }
-
     private void updateAapsTbr() {
         // As per the characteristics of the Omnipod, we only know whether or not a TBR is currently active
         // But it doesn't tell us the duration or amount, so we can only update TBR status in AAPS if
@@ -358,7 +352,7 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
                 rxBus.send(new EventNewNotification(notification));
             } else {
                 if (podStateManager.isSuspended()) {
-                    Notification notification = new Notification(Notification.OMNIPOD_POD_SUSPENDED, resourceHelper.gs(R.string.omnipod_pod_suspended), Notification.NORMAL);
+                    Notification notification = new Notification(Notification.OMNIPOD_POD_SUSPENDED, resourceHelper.gs(R.string.omnipod_confirmation_pod_suspended), Notification.NORMAL);
                     rxBus.send(new EventNewNotification(notification));
                 }
             }
@@ -729,6 +723,8 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
                 return executeCommand(OmnipodCommandType.SUSPEND_DELIVERY, aapsOmnipodManager::suspendDelivery);
             case RESUME_DELIVERY:
                 return executeCommand(OmnipodCommandType.RESUME_DELIVERY, () -> aapsOmnipodManager.setBasalProfile(profileFunction.getProfile(), false));
+            case DEACTIVATE_POD:
+                return executeCommand(OmnipodCommandType.DEACTIVATE_POD, aapsOmnipodManager::deactivatePod);
             case HANDLE_TIME_CHANGE:
                 return handleTimeChange(((CommandHandleTimeChange) command).isRequestedByUser());
             case UPDATE_ALERT_CONFIGURATION:
@@ -806,7 +802,7 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
             if (!requestedByUser && aapsOmnipodManager.isTimeChangeEventEnabled()) {
                 Notification notification = new Notification(
                         Notification.TIME_OR_TIMEZONE_CHANGE,
-                        resourceHelper.gs(R.string.omnipod_confirmation_time_or_timezone_change),
+                        resourceHelper.gs(R.string.omnipod_confirmation_time_on_pod_updated),
                         Notification.INFO, 60);
                 rxBus.send(new EventNewNotification(notification));
             }
@@ -899,8 +895,14 @@ public class OmnipodPumpPlugin extends PumpPluginBase implements PumpInterface, 
 
     @NonNull @Override public PumpEnactResult setTempBasalPercent(Integer percent, Integer
             durationInMinutes, Profile profile, boolean enforceNew) {
-        aapsLogger.debug(LTag.PUMP, "setTempBasalPercent [OmnipodPumpPlugin] - Not implemented.");
-        return getOperationNotSupportedWithCustomText(info.nightscout.androidaps.core.R.string.pump_operation_not_supported_by_pump_driver);
+        if (percent == 0) {
+            return setTempBasalAbsolute(0.0d, durationInMinutes, profile, enforceNew);
+        } else {
+            double absoluteValue = profile.getBasal() * (percent / 100.0d);
+            absoluteValue = pumpDescription.pumpType.determineCorrectBasalSize(absoluteValue);
+            aapsLogger.warn(LTag.PUMP, "setTempBasalPercent [OmnipodPumpPlugin] - You are trying to use setTempBasalPercent with percent other then 0% (" + percent + "). This will start setTempBasalAbsolute, with calculated value (" + absoluteValue + "). Result might not be 100% correct.");
+            return setTempBasalAbsolute(absoluteValue, durationInMinutes, profile, enforceNew);
+        }
     }
 
     @NonNull @Override public PumpEnactResult setExtendedBolus(Double insulin, Integer
