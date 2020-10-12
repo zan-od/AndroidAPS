@@ -78,6 +78,8 @@ public class DetermineBasalAdapterSMBJS {
     private String storedSMBAlwaysAllowed = null;
     private String storedCurrentTime = null;
 
+    private String enableSmbIgnore = null;
+
     private String scriptDebug = "";
 
     /**
@@ -282,7 +284,7 @@ public class DetermineBasalAdapterSMBJS {
         //}
         mProfile.put("remainingCarbsCap", SMBDefaults.remainingCarbsCap);
         mProfile.put("enableUAM", uamAllowed);
-        mProfile.put("A52_risk_enable", SMBDefaults.A52_risk_enable);
+        mProfile.put("A52_risk_enable", SP.getBoolean(R.string.key_a52_risk_enable, SMBDefaults.A52_risk_enable));
 
         boolean smbEnabled = sp.getBoolean(resourceHelper.gs(R.string.key_use_smb), false);
         mProfile.put("SMBInterval", sp.getInt(R.string.key_smbinterval, SMBDefaults.SMBInterval));
