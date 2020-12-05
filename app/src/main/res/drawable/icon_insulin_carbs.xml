@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_cp_bolus_carbs" />
-    <item android:drawable="@drawable/ic_bolus" />
-</layer-list>
+<vector android:height="48dp" android:viewportHeight="64"
+    android:viewportWidth="64" android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#ffffff" android:pathData="M11.2146,48.646L11.2146,11.354C11.2146,8.745 13.3326,6.627 15.9416,6.627L39.4256,6.627C42.0346,6.627 44.1526,8.745 44.1526,11.354L44.1526,48.646C44.1526,51.255 42.0346,53.373 39.4256,53.373L15.9416,53.373C13.3326,53.373 11.2146,51.255 11.2146,48.646ZM27.6836,40.424L27.9296,40.424C34.2766,40.424 39.4296,35.272 39.4296,28.924C39.4296,22.577 34.2766,17.424 27.9296,17.424C27.8886,17.424 27.8476,17.425 27.8066,17.425C27.7656,17.425 27.7246,17.424 27.6836,17.424C21.3366,17.424 16.1836,22.577 16.1836,28.924C16.1836,35.272 21.3366,40.424 27.6836,40.424Z"/>
+    <path android:fillColor="#F7806A" android:pathData="M36.5746,26.321l0,5.207l-17.291,0l-0,-5.207z"/>
+    <path android:fillColor="#F7806A" android:pathData="M30.5344,37.5691l-5.207,0.0007l-0.0024,-17.291l5.207,-0.0007z"/>
+    <path android:fillColor="#ffffff" android:pathData="M47.6293,20.2786l0,1.617l-3.0365,0l-0,-1.617z"/>
+    <path android:fillColor="#ffffff" android:pathData="M47.6293,35.9524l0,1.617l-3.0365,0l-0,-1.617z"/>
+    <path android:fillColor="#ffffff" android:pathData="M49.5326,21.474C49.5326,22.134 47.9207,23.326 47.822,22.67C47.7061,21.896 46.775,21.513 46.1114,21.474C45.1703,21.42 46.878,20.279 47.822,20.279C48.7659,20.279 49.5326,20.815 49.5326,21.474Z"/>
+    <path android:fillColor="#ffffff" android:pathData="M49.5326,21.896l0,14.056l-1.904,0l-0,-14.056z"/>
+    <path android:fillColor="#ffffff" android:pathData="M49.5326,36.3068C49.5326,37.0041 48.7659,37.5704 47.822,37.5704C46.878,37.5704 45.2118,36.5192 46.1114,36.3068C46.6349,36.1832 47.7505,35.9994 47.822,35.0444C47.8735,34.3481 49.5326,35.6106 49.5326,36.3068Z"/>
+</vector>
