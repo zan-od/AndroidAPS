@@ -75,4 +75,6 @@
     <color name="importListFileName">#FFFFFF</color>
     <color name="importListAdditionalInfo">#BBBBBB</color>
 
+    <color name="black">#000000</color>
+
 </resources>
