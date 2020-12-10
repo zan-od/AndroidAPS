@@ -68,7 +68,9 @@
 
     <color name="importListFileName">#FFFFFF</color>
     <color name="importListAdditionalInfo">#BBBBBB</color>
+/* Rig22 colors */
 
-    <color name="black">#000000</color>
+    <color name="black">#010101</color>
+    <color name="rig22Blue">#238af3</color>
 
 </resources>

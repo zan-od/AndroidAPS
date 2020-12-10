@@ -18,12 +18,14 @@
             android:layout_marginTop="15dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@string/actions" />
+            android:text="@string/actions"
+            android:textColor="@color/rig22Blue"/>
 
         <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dip"
+
             app:columnCount="2">
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
@@ -35,6 +37,7 @@
                 android:drawableTop="@drawable/ic_actions_profileswitch"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_profileswitch"
 
                 app:layout_column="0"
@@ -51,6 +54,7 @@
                 android:drawableTop="@drawable/ic_actions_temptarget"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_temporarytarget"
 
                 app:layout_column="1"
@@ -131,7 +135,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@string/careportal" />
+            android:text="@string/careportal"
+            android:textColor="@color/rig22Blue"/>
 
         <include
             android:id="@+id/careportal_stats"
@@ -155,6 +160,7 @@
                 android:drawableTop="@drawable/ic_cp_bgcheck"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_bgcheck"
                 app:layout_column="0"
                 app:layout_columnWeight="1"
@@ -170,6 +176,7 @@
                 android:drawableTop="@drawable/ic_cp_pump_canula"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/primefill"
 
                 app:layout_column="1"
@@ -186,6 +193,7 @@
                 android:drawableTop="@drawable/ic_cp_cgm_insert"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_cgmsensorinsert"
                 app:layout_column="0"
                 app:layout_columnWeight="1"
@@ -201,6 +209,7 @@
                 android:drawableTop="@drawable/ic_cp_pump_battery"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_pumpbatterychange"
                 app:layout_column="1"
                 app:layout_columnWeight="1"
@@ -216,6 +225,7 @@
                 android:drawableTop="@drawable/ic_cp_note"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_note"
                 app:layout_column="0"
                 app:layout_columnWeight="1"
@@ -231,6 +241,7 @@
                 android:drawableTop="@drawable/ic_cp_exercise"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="10dp"
                 android:text="@string/careportal_exercise"
                 app:layout_column="1"
                 app:layout_columnWeight="1"
@@ -274,7 +285,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="@string/tools" />
+            android:text="@string/tools"
+            android:textColor="@color/rig22Blue"/>
 
         <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
