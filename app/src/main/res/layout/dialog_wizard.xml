@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/black"
+            android:background="@color/dialog_title_background"
             android:orientation="horizontal"
             android:padding="5dp">
 
@@ -302,6 +302,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="@string/mdtp_cancel"
+                android:textColor="@color/rig22Blue"
                 android:textAlignment="textEnd" />
 
             <Button
@@ -310,7 +311,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@string/mdtp_ok" />
+                android:text="@string/mdtp_ok"
+                android:textColor="@color/rig22Blue"/>
         </LinearLayout>
 
         <View
