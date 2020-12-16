@@ -10,7 +10,7 @@
     android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/ribbonDefault"
+    android:background="@color/black"
     android:padding="8dp">
 
     <CheckBox
@@ -31,6 +31,7 @@
         android:layout_toStartOf="@+id/iconTrash"
         android:layout_toEndOf="@id/enabled"
         android:text="Title"
+        android:textColor="@color/rig22Blue"
         android:textAlignment="viewStart"
         android:textStyle="bold" />
 

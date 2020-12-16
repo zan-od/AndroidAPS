@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -102,7 +103,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/dia_short"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -113,7 +113,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/ic_short"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -124,7 +123,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/isf_short"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -135,7 +133,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/basal_short"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -146,7 +143,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/target_short"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -250,6 +246,7 @@
         <Button
             android:id="@+id/localprofile_profileswitch"
             style="?android:attr/buttonStyle"
+            android:background="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
@@ -261,6 +258,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="@string/activate_profile"
+            android:textColor="@color/rig22Blue"
             android:drawableStart="@drawable/ic_local_activate" />
 
         <LinearLayout
@@ -272,6 +270,7 @@
             <Button
                 android:id="@+id/localprofile_reset"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -283,11 +282,13 @@
                 android:drawableStart="@drawable/ic_local_reset"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/reset" />
+                android:text="@string/reset"
+                android:textColor="@color/rig22Blue"/>
 
             <Button
                 android:id="@+id/localprofile_save"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -299,7 +300,8 @@
                 android:drawableStart="@drawable/ic_local_save"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/save" />
+                android:text="@string/save"
+                android:textColor="@color/rig22Blue"/>
         </LinearLayout>
 
     </LinearLayout>

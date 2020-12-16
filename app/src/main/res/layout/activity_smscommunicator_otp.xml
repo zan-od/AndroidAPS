@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".plugins.general.smsCommunicator.activities.SmsCommunicatorOtpActivity">
 
     <ScrollView
@@ -16,7 +17,8 @@
 
             <TextView
                 style="@style/section_header_label"
-                android:text="@string/smscommunicator_otp_step1_install_header" />
+                android:text="@string/smscommunicator_otp_step1_install_header"
+                android:textColor="@color/rig22Blue"/>
 
             <TextView
                 android:layout_width="fill_parent"
@@ -25,11 +27,13 @@
                 android:layout_marginBottom="5sp"
                 android:paddingStart="15sp"
                 android:paddingEnd="15sp"
-                android:text="@string/smscommunicator_otp_install_info" />
+                android:text="@string/smscommunicator_otp_install_info"
+                android:textColor="@color/rig22Blue"/>
 
             <TextView
                 style="@style/section_header_label"
-                android:text="@string/smscommunicator_otp_step2_provisioning_header" />
+                android:text="@string/smscommunicator_otp_step2_provisioning_header"
+                android:textColor="@color/rig22Blue"/>
 
             <ImageView
                 android:id="@+id/smscommunicator_otp_provisioning"
@@ -44,7 +48,8 @@
 
             <TextView
                 style="@style/section_header_label"
-                android:text="@string/smscommunicator_otp_step3_test_header" />
+                android:text="@string/smscommunicator_otp_step3_test_header"
+                android:textColor="@color/rig22Blue"/>
 
             <TextView
                 android:layout_width="fill_parent"
@@ -53,7 +58,8 @@
                 android:layout_marginBottom="5sp"
                 android:paddingStart="15sp"
                 android:paddingEnd="15sp"
-                android:text="@string/smscommunicator_code_verify_info" />
+                android:text="@string/smscommunicator_code_verify_info"
+                android:textColor="@color/rig22Blue"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="15dp"
                     android:paddingEnd="5dp"
-                    android:text="@string/smscommunicator_code_verify_label" />
+                    android:text="@string/smscommunicator_code_verify_label"
+                    android:textColor="@color/rig22Blue"/>
 
                 <EditText
                     android:id="@+id/smscommunicator_otp_verify_edit"
@@ -89,7 +96,8 @@
 
             <TextView
                 style="@style/section_header_label"
-                android:text="@string/smscommunicator_otp_reset_header" />
+                android:text="@string/smscommunicator_otp_reset_header"
+                android:textColor="@color/rig22Blue"/>
 
             <TextView
                 style="@style/warning_label"
@@ -98,6 +106,7 @@
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_smscommunicator_otp_reset"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
@@ -105,7 +114,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="3dp"
                 android:text="@string/smscommunicator_otp_reset_btn"
-                android:textColor="@color/colorTreatmentButton" />
+                android:textColor="@color/rig22Blue" />
 
         </LinearLayout>
     </ScrollView>

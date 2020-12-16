@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:orientation="vertical"
     tools:context=".setupwizard.SetupWizardActivity">
 
@@ -30,6 +31,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:text="@string/exit"
+            android:textColor="@color/rig22Blue"
             android:onClick="exitPressed"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold" />
@@ -41,9 +43,9 @@
         android:layout_height="wrap_content"
         android:keepScreenOn="true"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
         android:textSize="32sp"
-        tools:text="Title" />
+        tools:text="Title"
+        android:textColor="@color/rig22Blue" />
 
     <ScrollView
         android:id="@+id/sw_scrollview"
@@ -75,7 +77,7 @@
             android:background="@android:color/transparent"
             android:onClick="showPreviousPage"
             android:text="@string/previous_button"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/rig22Blue" />
 
         <View
             android:layout_width="0dp"
@@ -89,7 +91,7 @@
             android:background="@android:color/transparent"
             android:onClick="showNextPage"
             android:text="@string/next_button"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/rig22Blue" />
 
         <Button
             android:id="@+id/finish_button"
@@ -98,7 +100,7 @@
             android:background="@android:color/transparent"
             android:onClick="finishSetupWizard"
             android:text="@string/setupwizard_finish"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/rig22Blue" />
 
     </LinearLayout>
 

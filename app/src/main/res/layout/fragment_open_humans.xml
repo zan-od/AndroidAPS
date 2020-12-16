@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -51,13 +52,17 @@
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login" />
+            android:text="@string/login"
+            android:textColor="@color/rig22Blue"
+            android:background="@color/black"/>
 
         <Button
             android:id="@+id/logout"
             android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/logout" />
+            android:text="@string/logout"
+            android:textColor="@color/rig22Blue"
+            android:background="@color/black"/>
     </LinearLayout>
 </ScrollView>

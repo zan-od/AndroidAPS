@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="info.nightscout.androidaps.plugins.treatments.fragments.TreatmentsCareportalFragment">
@@ -17,20 +18,24 @@
             <Button
                 android:id="@+id/careportal_refreshfromnightscout"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/refresheventsfromnightscout" />
+                android:text="@string/refresheventsfromnightscout"
+                android:textColor="@color/rig22Blue"/>
 
             <Button
                 android:id="@+id/careportal_removeandroidapsstartedevents"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/careportal_removestartedevents" />
+                android:text="@string/careportal_removestartedevents"
+                android:textColor="@color/rig22Blue"/>
 
         </LinearLayout>
 

@@ -66,6 +66,7 @@
                 android:width="120dp"
                 android:padding="10dp"
                 android:text="@string/treatments_wizard_bg_label"
+                android:textColor="@color/rig22Blue"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textStyle="bold" />
 

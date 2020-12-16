@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -159,15 +160,19 @@
 
         <Button
             android:id="@+id/survey_submit"
+            android:background="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit" />
+            android:text="@string/submit"
+            android:textColor="@color/rig22Blue"/>
 
         <Button
             android:id="@+id/survey_profile"
+            android:background="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/profile" />
+            android:text="@string/profile"
+            android:textColor="@color/rig22Blue"/>
 
         <TextView
             android:layout_width="wrap_content"
