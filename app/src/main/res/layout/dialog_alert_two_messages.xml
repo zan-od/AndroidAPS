@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -14,7 +13,6 @@
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:text="@string/password_preferences_decrypt_prompt"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/rig22Blue" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>

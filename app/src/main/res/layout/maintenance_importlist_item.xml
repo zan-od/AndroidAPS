@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/careportal_cardview"
     android:layout_width="match_parent"
@@ -29,7 +28,8 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="1dp"
-                card_view:srcCompat="@drawable/ic_meta_format" />
+                card_view:srcCompat="@drawable/ic_meta_format"
+                android:background="#FFFFFF"/>
 
             <TextView
                 android:id="@+id/filelist_name"
@@ -89,7 +89,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="1dp"
-                card_view:srcCompat="@drawable/ic_meta_name" />
+                card_view:srcCompat="@drawable/ic_meta_name"
+                android:background="#FFFFFF"/>
 
             <TextView
                 android:id="@+id/meta_device_name"
@@ -120,7 +121,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="1dp"
-                card_view:srcCompat="@drawable/ic_meta_date" />
+                card_view:srcCompat="@drawable/ic_meta_date"
+                android:background="#FFFFFF"/>
 
             <TextView
                 android:id="@+id/meta_date_time"

@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".plugins.treatments.fragments.TreatmentsBolusFragment">
@@ -57,24 +56,20 @@
             <Button
                 android:id="@+id/treatments_reshreshfromnightscout"
                 style="?android:attr/buttonStyle"
-                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/nav_refreshtreatments"
-                android:textColor="@color/rig22Blue"/>
+                android:text="@string/nav_refreshtreatments" />
 
             <Button
                 android:id="@+id/treatments_delete_future_treatments"
                 style="?android:attr/buttonStyle"
-                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/deletefuturetreatments"
-                android:textColor="@color/rig22Blue"/>
+                android:text="@string/deletefuturetreatments" />
 
         </LinearLayout>
 
