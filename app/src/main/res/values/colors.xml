@@ -54,7 +54,7 @@
     <color name="deviationred">#72FF0000</color>
     <color name="deviationblack">#72000000</color>
 
-    <color name="ribbonDefault">#5a595b</color>
+    <color name="ribbonDefault">#2d2d2d</color> /*5a595b*/
     <color name="ribbonWarning">#f4d700</color>
     <color name="ribbonCritical">#ff0400</color>
     <color name="ribbonTextDefault">#FFFFFF</color>
