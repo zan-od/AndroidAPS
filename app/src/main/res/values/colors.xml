@@ -23,9 +23,8 @@
     <color name="defaulttext">#BBBBBB</color>
     <color name="defaulttextcolor">#B3FFFFFF</color>
 
-    <color name="tempTargetBackground">#238af3</color> /*77dd77*/
+    <color name="tempTargetBackground">#77dd77</color>
     <color name="tempTargetConfirmation">#77dd77</color>
-
 
     <color name="cardObjectiveText">#779ECB</color>
 
