@@ -23,7 +23,7 @@
     <color name="defaulttext">#BBBBBB</color>
     <color name="defaulttextcolor">#B3FFFFFF</color>
 
-    <color name="tempTargetBackground">#77dd77</color>
+    <color name="tempTargetBackground">#FFFFFF</color> /*77dd77*/
     <color name="tempTargetConfirmation">#77dd77</color>
 
     <color name="cardObjectiveText">#779ECB</color>
@@ -57,7 +57,7 @@
     <color name="ribbonWarning">#f4d700</color>
     <color name="ribbonCritical">#ff0400</color>
     <color name="ribbonTextDefault">#FFFFFF</color>
-    <color name="ribbonTextWarning">#303030</color>
+    <color name="ribbonTextWarning">#000000</color> /*303030*/
 
     <color name="splashBackground">#2E2E2E</color>
 
@@ -74,5 +74,6 @@
     <color name="black2">#212121</color>
     <color name="rig22Blue">#238af3</color>
     <color name="inrange">#238af3</color>
+    <color name="amber">#FEA300</color>
 
 </resources>
