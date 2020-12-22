@@ -14,7 +14,7 @@
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:text="@string/setbasalquestion"
-        android:textColor="@color/colorAcceptTempButton"
+        android:textColor="@color/white"
         android:visibility="gone" />
 
     <LinearLayout
@@ -35,7 +35,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/icon_insulin_carbs"
             android:text="Manuell"
-            android:textColor="@color/colorTreatmentButton"
+            android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="gone" />
 
@@ -49,7 +49,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_bolus"
             android:text="@string/overview_insulin_label"
-            android:textColor="@color/colorInsulinButton"
+            android:textColor="@color/white"
             android:textSize="10sp" />
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
@@ -62,7 +62,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_cp_bolus_carbs"
             android:text="@string/overview_carbs_label"
-            android:textColor="@color/colorCarbsButton"
+            android:textColor="@color/white"
             android:textSize="10sp" />
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
@@ -75,7 +75,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_calculator"
             android:text="@string/overview_calculator_label"
-            android:textColor="@color/colorCalculatorButton"
+            android:textColor="@color/white"
             android:textSize="10sp" />
 
         <info.nightscout.androidaps.utils.ui.SingleClickButton
@@ -88,7 +88,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_calibration"
             android:text="@string/overview_calibration"
-            android:textColor="@color/colorCalibrationButton"
+            android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="gone" />
 
@@ -102,7 +102,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_xdrip"
             android:text="@string/overview_cgm"
-            android:textColor="@color/colorCalibrationButton"
+            android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="gone" />
 
@@ -116,7 +116,7 @@
             android:layout_weight="0.5"
             android:drawableTop="@drawable/ic_quickwizard"
             android:text="@string/quickwizard"
-            android:textColor="@color/colorQuickWizardButton"
+            android:textColor="@color/white"
             android:textSize="10sp" />
 
     </LinearLayout>

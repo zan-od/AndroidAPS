@@ -14,11 +14,12 @@
     <Button
         android:id="@+id/nsprofile_profileswitch"
         style="?android:attr/buttonStyle"
+        android:background="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/activate_profile"
-        android:textColor="@color/colorProfileSwitchButton" />
+        android:textColor="@color/rig22Blue" />
 
     <include
         layout="@layout/profileviewer_fragment"

@@ -2,11 +2,11 @@
     android:viewportWidth="16" android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="#00000000"
         android:pathData="M5.882,4.088h3.12v7.183h-3.12z"
-        android:strokeColor="#fff" android:strokeWidth="0.22"/>
+        android:strokeColor="#fff" android:strokeWidth="0.2"/>
     <path android:fillColor="#00000000"
         android:pathData="M1.842,4.088h3.12v7.183h-3.12z"
-        android:strokeColor="#fff" android:strokeWidth="0.22"/>
+        android:strokeColor="#fff" android:strokeWidth="0.2"/>
     <path android:fillColor="#00000000"
         android:pathData="M10.409,4.088h3.11v7.183h-3.11z"
-        android:strokeColor="#fff" android:strokeWidth="0.22"/>
+        android:strokeColor="#fff" android:strokeWidth="0.2"/>
 </vector>
