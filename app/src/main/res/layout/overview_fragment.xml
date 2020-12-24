@@ -25,9 +25,9 @@
 
             <include layout="@layout/overview_loop_pumpstatus_layout" />
 
-            <include layout="@layout/overview_info_layout" />
-
             <include layout="@layout/overview_statuslights_layout" />
+
+            <include layout="@layout/overview_info_layout" />
 
             <include layout="@layout/overview_graphs_layout" />
 
