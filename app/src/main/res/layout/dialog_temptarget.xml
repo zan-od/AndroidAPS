@@ -207,7 +207,7 @@
                 android:layout_weight="0.5"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:drawableTop="@drawable/ic_temptarget_low"
+                android:drawableTop="@drawable/ic_temptarget_high"
                 android:text="@string/activity"
                 android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
