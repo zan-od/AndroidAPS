@@ -11,8 +11,8 @@
             app:columnCount="6">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_user_profil"
                 app:layout_column="0"
                 app:layout_columnWeight="1"
@@ -20,8 +20,8 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_tt"
                 app:layout_column="1"
                 app:layout_columnWeight="1"
@@ -29,8 +29,8 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_sensor"
                 app:layout_column="2"
                 app:layout_columnWeight="1"
@@ -38,17 +38,17 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
-                app:drawableTopCompat="@drawable/ic_cp_age_insulin"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_insulin_2"
                 app:layout_column="3"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_canula"
                 app:layout_column="4"
                 app:layout_columnWeight="1"
@@ -56,9 +56,9 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="32dp"
-                app:drawableTopCompat="@drawable/ic_cp_age_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_battery_2"
                 app:layout_column="5"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
