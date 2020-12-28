@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                app:drawableTopCompat="@drawable/ic_cp_age_battery_2"
+                app:drawableTopCompat="@drawable/ic_cp_age_battery"
                 app:layout_column="5"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
