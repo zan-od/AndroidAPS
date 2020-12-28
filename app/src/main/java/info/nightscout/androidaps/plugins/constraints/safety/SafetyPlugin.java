@@ -148,14 +148,14 @@ public class SafetyPlugin extends PluginBase implements ConstraintsInterface {
         return value;
     }
 
-    @NonNull @Override
+/*    @NonNull @Override
     public Constraint<Boolean> isAdvancedFilteringEnabled(@NonNull Constraint<Boolean> value) {
         BgSourceInterface bgSource = activePlugin.getActiveBgSource();
 
         if (!bgSource.advancedFilteringSupported())
             value.set(getAapsLogger(), false, getResourceHelper().gs(R.string.smbalwaysdisabled), this);
         return value;
-    }
+    }*/
 
     @NonNull @Override
     public Constraint<Double> applyBasalConstraints(Constraint<Double> absoluteRate, @NonNull Profile profile) {
