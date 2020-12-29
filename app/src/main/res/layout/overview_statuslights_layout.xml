@@ -11,7 +11,7 @@
             app:columnCount="6">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_user_profil"
                 app:layout_column="0"
@@ -20,7 +20,7 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_tt"
                 app:layout_column="1"
@@ -29,7 +29,7 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_sensor"
                 app:layout_column="2"
@@ -38,7 +38,7 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_insulin_2"
                 app:layout_column="3"
@@ -47,7 +47,7 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_canula"
                 app:layout_column="4"
@@ -56,7 +56,7 @@
                 app:layout_row="0" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 app:drawableTopCompat="@drawable/ic_cp_age_battery"
                 app:layout_column="5"
@@ -66,9 +66,14 @@
 
             <TextView
                 android:id="@+id/overview_activeprofile"
-                android:textAlignment="center"
                 android:textColor="@android:color/white"
-                android:textSize="14dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
+                android:textAlignment="center"
                 app:layout_column="0"
                 app:layout_gravity="fill"
                 app:layout_row="1" />
@@ -76,7 +81,12 @@
             <TextView
                 android:id="@+id/overview_temptarget"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
                 android:textAlignment="center"
                 app:layout_column="1"
                 app:layout_gravity="fill"
