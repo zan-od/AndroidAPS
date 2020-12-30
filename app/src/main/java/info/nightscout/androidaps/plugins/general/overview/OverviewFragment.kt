@@ -659,8 +659,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         // temp target
         val tempTarget = treatmentsPlugin.tempTargetFromHistory
         if (tempTarget != null) {
-            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
-            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
+            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.white))
+            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.rig22Blue))
             overview_temptarget?.text = Profile.toTargetRangeString(tempTarget.low, tempTarget.high, Constants.MGDL, units) + " " + DateUtil.untilString(tempTarget.end(), resourceHelper)
         } else {
             // If the target is not the same as set in the profile then oref has overridden it

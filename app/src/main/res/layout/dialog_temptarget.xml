@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
@@ -36,6 +37,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="@string/careportal_temporarytarget"
+                android:textColor="@color/rig22Blue"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -151,6 +153,7 @@
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/overview_temptarget_cancel"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
@@ -159,51 +162,54 @@
                 android:paddingRight="5dp"
                 android:drawableTop="@drawable/ic_target_cancel"
                 android:text="@string/cancel"
-                android:textColor="@color/tempTargetConfirmation"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/overview_temptarget_eating_soon"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
                 android:layout_weight="0.5"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:drawableTop="@drawable/ic_target_eatingsoon"
+                android:drawableTop="@drawable/ic_temptarget_low"
                 android:text="@string/eatingsoon"
-                android:textColor="@color/carbs"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/overview_temptarget_activity"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
                 android:layout_weight="0.5"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:drawableTop="@drawable/ic_target_activity"
+                android:drawableTop="@drawable/ic_temptarget_high"
                 android:text="@string/activity"
-                android:textColor="@color/exercise"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/overview_temptarget_hypo"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_weight="0.5"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:drawableTop="@drawable/ic_target_hypo"
+                android:drawableTop="@drawable/ic_temptarget_high"
                 android:text="@string/hypo"
-                android:textColor="@color/low"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="11sp" />
 

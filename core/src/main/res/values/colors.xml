@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#40bbaa</color>
+    <color name="colorAccent">#238af3</color>
     <color name="mdtp_button_selected">#33969696</color>
     <color name="mdtp_accent_color">#009688</color>
     <color name="mdtp_button_color">@color/mdtp_accent_color</color>

@@ -1,106 +1,154 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/overview_statuslights"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:layout_marginBottom="3dp"
-    android:background="?attr/colorControlHighlight"
-    android:orientation="horizontal"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:id="@+id/overview_statuslights">
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:scaleType="centerInside"
-        android:scaleX="2"
-        android:scaleY="2"
-        app:srcCompat="@drawable/ic_cp_age_canula" />
+        <androidx.gridlayout.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:columnCount="6">
 
-    <TextView
-        android:id="@+id/careportal_canulaage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingStart="1dp"
-        android:paddingEnd="2dp"
-        android:textSize="14sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_user_profil"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:scaleType="centerInside"
-        android:scaleX="1.8"
-        android:scaleY="1.8"
-        app:srcCompat="@drawable/ic_cp_age_insulin" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_tt"
+                app:layout_column="1"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <TextView
-        android:id="@+id/careportal_insulinage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingStart="1dp"
-        android:paddingEnd="2dp"
-        android:textSize="14sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_sensor"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <TextView
-        android:id="@+id/careportal_reservoirlevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textSize="14sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_insulin_2"
+                app:layout_column="3"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:scaleType="centerInside"
-        android:scaleX="2"
-        android:scaleY="2"
-        app:srcCompat="@drawable/ic_cp_age_sensor" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_canula"
+                app:layout_column="4"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <TextView
-        android:id="@+id/careportal_sensorage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingStart="1dp"
-        android:paddingEnd="2dp"
-        android:textSize="14sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                app:drawableTopCompat="@drawable/ic_cp_age_battery"
+                app:layout_column="5"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:scaleType="centerInside"
-        android:scaleX="2"
-        android:scaleY="2"
-        app:srcCompat="@drawable/ic_cp_age_battery" />
+            <TextView
+                android:id="@+id/overview_activeprofile"
+                android:textColor="@android:color/white"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
+                android:textAlignment="center"
+                app:layout_column="0"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
 
-    <TextView
-        android:id="@+id/careportal_pbage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingStart="1dp"
-        android:paddingEnd="1dp"
-        android:textSize="14sp" />
+            <TextView
+                android:id="@+id/overview_temptarget"
+                android:textColor="@android:color/white"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
+                android:textAlignment="center"
+                app:layout_column="1"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
 
-    <TextView
-        android:id="@+id/careportal_batterylevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingStart="1dp"
-        android:paddingEnd="2dp"
-        android:textSize="14sp" />
+            <TextView
+                android:id="@+id/careportal_sensorage"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                app:layout_column="2"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
 
-</LinearLayout>
+
+            <TextView
+                android:id="@+id/careportal_reservoirlevel"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                app:layout_column="3"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
+
+
+            <TextView
+                android:id="@+id/careportal_canulaage"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                app:layout_column="4"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
+
+
+            <TextView
+                android:id="@+id/careportal_pbage"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                app:layout_column="5"
+                app:layout_gravity="fill"
+                app:layout_row="1" />
+
+            <TextView
+                android:id="@+id/careportal_insulinage"
+                android:textColor="@android:color/white"
+                android:textSize="0sp"
+                android:textAlignment="center"
+                app:layout_column="3"
+                app:layout_gravity="fill"
+                app:layout_row="2" />
+
+            <TextView
+                android:id="@+id/careportal_batterylevel"
+                android:textColor="@android:color/white"
+                android:textSize="0sp"
+                android:textAlignment="center"
+                app:layout_column="5"
+                app:layout_gravity="fill"
+                app:layout_row="2" />
+
+        </androidx.gridlayout.widget.GridLayout>
+
+</FrameLayout>

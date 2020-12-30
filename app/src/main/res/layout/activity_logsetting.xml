@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -34,6 +35,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="@string/nav_logsettings"
+            android:textColor="@color/rig22Blue"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -68,7 +70,8 @@
                 android:layout_width="wrap_content"
                 android:layout_marginEnd="8dp"
                 style="@style/mdtp_ActionButton.Text"
-                android:text="@string/resettodefaults" />
+                android:text="@string/resettodefaults"
+                android:textColor="@color/rig22Blue"/>
 
             <Button
                 android:id="@+id/ok"
@@ -76,7 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 style="@style/mdtp_ActionButton.Text"
-                android:text="@string/mdtp_ok" />
+                android:text="@string/mdtp_ok"
+                android:textColor="@color/rig22Blue"/>
 
         </LinearLayout>
 

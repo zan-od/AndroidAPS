@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,7 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:text="@string/unlock_settings" />
+        android:text="@string/unlock_settings"
+        android:textColor="@color/rig22Blue"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/configbuilder_main_layout"
