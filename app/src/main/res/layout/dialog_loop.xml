@@ -65,8 +65,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="@string/loop"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/rig22Blue"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textSize="18dp" />
 
             <LinearLayout
                 android:id="@+id/overview_loop_buttons"
@@ -186,6 +187,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="@string/suspendloop"
+                android:textSize="18dp"
                 android:textColor="@color/rig22Blue"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -298,13 +300,14 @@
                 android:id="@+id/overview_pump_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/black2"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:background="@color/black2"
                 android:text="@string/disconnectpump"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/rig22Blue"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textSize="18dp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/overview_reconnect"

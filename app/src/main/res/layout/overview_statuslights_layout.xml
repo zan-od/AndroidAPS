@@ -68,7 +68,7 @@
                 android:id="@+id/overview_activeprofile"
                 android:textColor="@android:color/white"
                 android:paddingLeft="2dp"
-                android:paddingRight="4dp"
+                android:paddingRight="6dp"
                 app:autoSizeTextType="uniform"
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeMaxTextSize="14sp"
@@ -95,7 +95,7 @@
             <TextView
                 android:id="@+id/careportal_sensorage"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textAlignment="center"
                 app:layout_column="2"
                 app:layout_gravity="fill"
@@ -105,7 +105,7 @@
             <TextView
                 android:id="@+id/careportal_reservoirlevel"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textAlignment="center"
                 app:layout_column="3"
                 app:layout_gravity="fill"
@@ -115,7 +115,7 @@
             <TextView
                 android:id="@+id/careportal_canulaage"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textAlignment="center"
                 app:layout_column="4"
                 app:layout_gravity="fill"
@@ -125,7 +125,7 @@
             <TextView
                 android:id="@+id/careportal_pbage"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textAlignment="center"
                 app:layout_column="5"
                 app:layout_gravity="fill"
