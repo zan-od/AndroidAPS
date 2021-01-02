@@ -68,7 +68,7 @@
                 android:id="@+id/overview_activeprofile"
                 android:textColor="@android:color/white"
                 android:paddingLeft="2dp"
-                android:paddingRight="6dp"
+                android:paddingRight="2dp"
                 app:autoSizeTextType="uniform"
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeMaxTextSize="14sp"
