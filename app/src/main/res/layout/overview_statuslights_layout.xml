@@ -71,6 +71,11 @@
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="13sp"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:scrollbars = "vertical"
             app:layout_column="0"
             app:layout_gravity="fill"
             app:layout_row="1" />
@@ -114,7 +119,6 @@
             app:layout_column="4"
             app:layout_gravity="fill"
             app:layout_row="1" />
-
 
         <TextView
             android:id="@+id/careportal_pbage"

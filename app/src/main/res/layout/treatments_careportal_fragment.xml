@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context="info.nightscout.androidaps.plugins.treatments.fragments.TreatmentsCareportalFragment">
 
     <LinearLayout
@@ -21,7 +22,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/refresheventsfromnightscout" />
+                android:text="@string/refresheventsfromnightscout"
+                android:textColor="@color/rig22Blue"
+                android:background="@color/black2"/>
 
             <Button
                 android:id="@+id/careportal_removeandroidapsstartedevents"
@@ -30,7 +33,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
-                android:text="@string/careportal_removestartedevents" />
+                android:text="@string/careportal_removestartedevents"
+                android:textColor="@color/rig22Blue"
+                android:background="@color/black2"/>
 
         </LinearLayout>
 
