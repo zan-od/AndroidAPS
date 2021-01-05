@@ -9,7 +9,7 @@
     <color name="devslopepos">#FFFFFF00</color>
     <color name="devslopeneg">#FFFF00FF</color>
     <color name="actionsConfirm">#FFFF00</color>
-    <color name="tabBgColorSelected">#FF33B5E5</color>
+    <color name="tabBgColorSelected">#238af3</color>
     <color name="deviations">#FF0000</color>
     <color name="cobAlert">#7484E2</color>
     <color name="inrangebackground">#28238af3</color> /*2800FF00*/
