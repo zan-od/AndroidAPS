@@ -259,7 +259,7 @@ public class DetermineBasalAdapterSMBJS {
         mProfile.put("resistance_lowers_target", sp.getBoolean(R.string.key_resistance_lowers_target, SMBDefaults.resistance_lowers_target));
         mProfile.put("adv_target_adjustments", SMBDefaults.adv_target_adjustments);
         mProfile.put("exercise_mode", SMBDefaults.exercise_mode);
-        mProfile.put("half_basal_exercise_target", SMBDefaults.half_basal_exercise_target);
+        mProfile.put("half_basal_exercise_target", sp.getInt(R.string.key_openapssmb_half_basal_exercise_target, SMBDefaults.half_basal_exercise_target));
         mProfile.put("maxCOB", SMBDefaults.maxCOB);
         mProfile.put("skip_neutral_temps", pump.setNeutralTempAtFullHour());
         // min_5m_carbimpact is not used within SMB determinebasal
