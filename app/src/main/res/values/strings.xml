@@ -631,6 +631,8 @@
     <string name="smbmaxminutes_summary">Max minutes of basal to limit SMB to</string>
     <string name="uamsmbmaxminutes">UAM SMB max minutes</string>
     <string name="uamsmbmaxminutes_summary">Max minutes of basal to limit SMB to for UAM</string>
+    <string name="halfbasalexercisetarget">Half basal exercise temp target</string>
+    <string name="halfbasalexercisetarget_summary">BG (mg/dl) temp target to half the basal need when exercising</string>
     <string name="key_carbsReqThreshold" translatable="false">carbsReqThreshold</string>
     <string name="carbsReqThreshold">Minimum Carbs Required For Suggestion</string>
     <string name="carbsReqThreshold_summary">Minimum grams of carbs to display a carbs suggestion alert. Carbs suggestions below this number will not trigger a notification.</string>
@@ -821,6 +823,7 @@
     <string name="iobcobcalculator" translatable="false">IobCobCalculator</string>
     <string name="reset">reset</string>
     <string name="key_openapssmb_max_iob" translatable="false">openapsmb_max_iob</string>
+    <string name="key_openapssmb_half_basal_exercise_target" translatable="false">openapssmb_half_basal_exercise_target</string>
     <string name="openapssmb_maxiob_title">Maximum total IOB OpenAPS can\'t go over [U]</string>
     <string name="openapssmb_maxiob_summary">This value is called Max IOB in OpenAPS context\nOpenAPS will not add more insulin if current IOB is greater than this value</string>
     <string name="pump_stopped">Pump stopped</string>
