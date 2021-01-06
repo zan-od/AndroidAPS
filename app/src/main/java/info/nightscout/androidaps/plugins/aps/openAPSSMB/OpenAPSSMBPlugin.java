@@ -245,7 +245,9 @@ public class OpenAPSSMBPlugin extends PluginBase implements APSInterface, Constr
             lastAutosensResult.sensResult = "autosens disabled";
         }
 
-        IobTotal[] iobArray = iobCobCalculatorPlugin.calculateIobArrayForSMB(lastAutosensResult, SMBDefaults.exercise_mode, SMBDefaults.half_basal_exercise_target, isTempTarget);
+        int halfbasaltarget = sp.getInt(R.string.key_openapssmb_half_basal_exercise_target, SMBDefaults.half_basal_exercise_target);
+
+        IobTotal[] iobArray = iobCobCalculatorPlugin.calculateIobArrayForSMB(lastAutosensResult, SMBDefaults.exercise_mode, halfbasaltarget, isTempTarget);
         profiler.log(LTag.APS, "calculateIobArrayInDia()", startPart);
 
         startPart = System.currentTimeMillis();
