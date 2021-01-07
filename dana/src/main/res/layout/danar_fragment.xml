@@ -716,7 +716,8 @@
                     android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/viewprofile" />
+                    android:text="@string/viewprofile"
+                    android:textSize="0dp"/>
 
 
                 <Button
@@ -729,7 +730,8 @@
                     android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/pumphistory" />
+                    android:text="@string/pumphistory"
+                    android:textSize="0dp"/>
 
                 <Button
                     android:id="@+id/stats"
@@ -741,7 +743,8 @@
                     android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/stats" />
+                    android:text="@string/stats"
+                    android:textSize="0dp"/>
 
                 <Button
                     android:id="@+id/user_options"
@@ -753,7 +756,8 @@
                     android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/danar_useroptions" />
+                    android:text="@string/danar_useroptions"
+                    android:textSize="0dp"/>
 
             </LinearLayout>
 
