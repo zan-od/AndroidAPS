@@ -332,7 +332,7 @@
     <string name="correctionbous">Corr</string>
     <string name="actions">Actions</string>
     <string name="ns_upload_only">NS upload only (disabled sync)</string>
-    <string name="ns_upload_only_summary">NS upload only. Not effective on SGV unless a local source like xDrip is selected. Not effective on Profiles while NS-Profiles is used.</string>
+    <string name="ns_upload_only_summary">NS upload only. Not effective on SGV unless a local source like xDrip is selected. Not effective on Profiles while NS-Profiles is used.\n!!! WARNING !!! Disabling this option may cause malfunctions and insulin overdose if any of your component (AAPS, NS, xDrip) is wrong configured. Carefully watch if data displayed by AAPS match the pump state!</string>
     <string name="pumpNotInitialized">Pump not initialized!</string>
     <string name="primefill">Prime/Fill</string>
     <string name="fillwarning">Please make sure the amount matches the specification of your infusion set!</string>
@@ -1428,5 +1428,6 @@
     <string name="enablebolusadvisor_summary">Use reminder to start eating later instead of wizard result during high glycemia ("pre-bolus")</string>
     <string name="time_to_eat">Time to eat!\nRun Bolus wizard and do calculation again.</string>
     <string name="timetoeat">Time to eat</string>
+    <string name="fabric_upload_disabled">Crash logs upload disabled!</string>
 
 </resources>
