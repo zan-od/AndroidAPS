@@ -97,6 +97,9 @@ class VersionCheckerPlugin @Inject constructor(
             maxIob
 
     private fun isOldVersion(gracePeriod: Long): Boolean {
+        val byPass = sp.getBoolean(R.string.bypass_old_version_check, false);
+        if (byPass)
+            return false;
         val now = System.currentTimeMillis()
         return now > sp.getLong(R.string.key_last_time_this_version_detected, 0) + gracePeriod
     }
