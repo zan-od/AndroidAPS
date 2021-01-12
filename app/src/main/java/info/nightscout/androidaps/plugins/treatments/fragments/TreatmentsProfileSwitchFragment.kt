@@ -26,7 +26,6 @@ import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.T
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
-import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.extensions.toVisibility
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.sharedPreferences.SP
@@ -46,7 +45,6 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
     @Inject lateinit var nsUpload: NSUpload
     @Inject lateinit var uploadQueue: UploadQueue
     @Inject lateinit var dateUtil: DateUtil
-    @Inject lateinit var buildHelper: BuildHelper
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -61,13 +59,13 @@ class TreatmentsProfileSwitchFragment : DaggerFragment() {
 
         profileswitch_refreshfromnightscout.setOnClickListener {
             activity?.let { activity ->
-                OKDialog.showConfirmation(activity, resourceHelper.gs(R.string.refresheventsfromnightscout) + "?") {
+                OKDialog.showConfirmation(activity, resourceHelper.gs(R.string.refresheventsfromnightscout) + "?", Runnable {
                     MainApp.getDbHelper().resetProfileSwitch()
                     rxBus.send(EventNSClientRestart())
-                }
+                })
             }
         }
-        if (sp.getBoolean(R.string.key_ns_upload_only, true) && buildHelper.isEngineeringMode()) profileswitch_refreshfromnightscout.visibility = View.GONE
+        if (sp.getBoolean(R.string.key_ns_upload_only, true)) profileswitch_refreshfromnightscout.visibility = View.GONE
     }
 
     @Synchronized
