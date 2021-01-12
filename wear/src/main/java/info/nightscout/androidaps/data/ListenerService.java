@@ -80,12 +80,11 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
 
     private static final String ACTION_RESEND_BULK = "com.dexdrip.stephenblack.nightwatch.RESEND_BULK_DATA";
-    private static final String AAPS_NOTIFY_CHANNEL_ID_OPENLOOP = "AndroidAPS-Openloop";
-    private static final String AAPS_NOTIFY_CHANNEL_ID_BOLUSPROGRESS = "AndroidAPS-bolus-progress";
-
+    private static final String AAPS_NOTIFY_CHANNEL_ID = "AndroidAPS-Openloop";
 
     GoogleApiClient googleApiClient;
     private long lastRequest = 0;
+    private DismissThread confirmThread;
     private DismissThread bolusprogressThread;
     private static final String TAG = "ListenerService";
 
@@ -560,7 +559,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 CharSequence name = "AAPS Open Loop";
                 String description = "Open Loop request notiffication";//getString(R.string.channel_description);
-                NotificationChannel channel = new NotificationChannel(AAPS_NOTIFY_CHANNEL_ID_OPENLOOP, name, NotificationManager.IMPORTANCE_HIGH);
+                NotificationChannel channel = new NotificationChannel(AAPS_NOTIFY_CHANNEL_ID, name, NotificationManager.IMPORTANCE_HIGH);
                 channel.setDescription(description);
                 channel.enableVibration(true);
 
@@ -571,7 +570,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
             }
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, AAPS_NOTIFY_CHANNEL_ID_OPENLOOP);
+                new NotificationCompat.Builder(this, AAPS_NOTIFY_CHANNEL_ID);
 
         builder = builder.setSmallIcon(R.drawable.notif_icon)
                 .setContentTitle(title)
@@ -606,20 +605,6 @@ public class ListenerService extends WearableListenerService implements GoogleAp
     }
 
     private void showBolusProgress(int progresspercent, String progresstatus) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "AAPS Bolus Progress";
-            String description = "Bolus progress and cancel";
-            NotificationChannel channel = new NotificationChannel(AAPS_NOTIFY_CHANNEL_ID_BOLUSPROGRESS, name, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription(description);
-            channel.enableVibration(true);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
         Intent cancelIntent = new Intent(this, ListenerService.class);
         cancelIntent.setAction(ACTION_CANCELBOLUS);
         PendingIntent cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, 0);
@@ -633,13 +618,11 @@ public class ListenerService extends WearableListenerService implements GoogleAp
             vibratePattern = new long[]{0, 1, 1000};
         }
 
-        // TODO: proper channel. Does cancel work?
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, AAPS_NOTIFY_CHANNEL_ID_BOLUSPROGRESS)
+                new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_icon)
                         .setContentTitle("Bolus Progress")
                         .setContentText(progresspercent + "% - " + progresstatus)
-                        .setSubText("press to cancel")
                         .setContentIntent(cancelPendingIntent)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setVibrate(vibratePattern)
@@ -648,6 +631,9 @@ public class ListenerService extends WearableListenerService implements GoogleAp
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
 
+        if(confirmThread != null){
+            confirmThread.invalidate();
+        }
         notificationManager.notify(BOLUS_PROGRESS_NOTIF_ID, notificationBuilder.build());
         notificationManager.cancel(CONFIRM_NOTIF_ID); // multiple watch setup
 
@@ -670,6 +656,9 @@ public class ListenerService extends WearableListenerService implements GoogleAp
     }
 
     private void scheduleDismissBolusprogress(final int seconds) {
+        if(confirmThread != null){
+            confirmThread.invalidate();
+        }
         bolusprogressThread = new DismissThread(BOLUS_PROGRESS_NOTIF_ID, seconds);
         bolusprogressThread.start();
     }

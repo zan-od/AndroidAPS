@@ -32,7 +32,6 @@ import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.DecimalFormatter;
 import info.nightscout.androidaps.utils.FabricPrivacy;
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog;
-import info.nightscout.androidaps.utils.buildHelper.BuildHelper;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -52,7 +51,6 @@ public class TreatmentsTempTargetFragment extends DaggerFragment {
     @Inject UploadQueue uploadQueue;
     @Inject FabricPrivacy fabricPrivacy;
     @Inject DateUtil dateUtil;
-    @Inject BuildHelper buildHelper;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
@@ -182,7 +180,7 @@ public class TreatmentsTempTargetFragment extends DaggerFragment {
                     rxBus.send(new EventNSClientRestart());
                 }));
 
-        boolean nsUploadOnly = sp.getBoolean(R.string.key_ns_upload_only, true) && buildHelper.isEngineeringMode();
+        boolean nsUploadOnly = sp.getBoolean(R.string.key_ns_upload_only, true);
         if (nsUploadOnly)
             refreshFromNS.setVisibility(View.GONE);
 
