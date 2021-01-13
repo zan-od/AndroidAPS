@@ -68,7 +68,6 @@ interface SkinInterface {
                     view.careportal_canulaage,
                     view.careportal_insulinage,
                     view.careportal_reservoirlevel,
-                    view.careportal_reservoirlevel,
                     view.careportal_sensorage,
                     view.careportal_pbage,
                     view.careportal_batterylevel

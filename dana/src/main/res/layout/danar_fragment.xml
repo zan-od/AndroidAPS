@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:paddingTop="5dp"
     tools:context="info.nightscout.androidaps.dana.DanaFragment">
 
@@ -712,9 +713,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarprofile"
+                    android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/viewprofile" />
+                    android:text="@string/viewprofile"
+                    android:textSize="0dp"/>
 
 
                 <Button
@@ -724,9 +727,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarhistory"
+                    android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/pumphistory" />
+                    android:text="@string/pumphistory"
+                    android:textSize="0dp"/>
 
                 <Button
                     android:id="@+id/stats"
@@ -735,9 +740,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarstats"
+                    android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/stats" />
+                    android:text="@string/stats"
+                    android:textSize="0dp"/>
 
                 <Button
                     android:id="@+id/user_options"
@@ -746,9 +753,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danar_useropt"
+                    android:background="@color/black"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:text="@string/danar_useroptions" />
+                    android:text="@string/danar_useroptions"
+                    android:textSize="0dp"/>
 
             </LinearLayout>
 

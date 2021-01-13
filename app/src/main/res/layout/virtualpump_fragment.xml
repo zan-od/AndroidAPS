@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".plugins.pump.virtual.VirtualPumpFragment">
@@ -19,6 +20,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:text="@string/vitualpump_label"
+                android:textColor="@color/rig22Blue"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <LinearLayout

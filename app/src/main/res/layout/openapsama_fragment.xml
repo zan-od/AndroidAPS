@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="2dp"
+    android:background="@color/black"
     tools:context=".plugins.aps.openAPSAMA.OpenAPSAMAFragment">
 
     <ScrollView
@@ -22,9 +23,11 @@
                 <Button
                     android:id="@+id/openapsma_run"
                     style="?android:attr/buttonStyle"
+                    android:background="@color/black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/openapsma_run" />
+                    android:text="@string/openapsma_run"
+                    android:textColor="@color/rig22Blue"/>
 
             </LinearLayout>
 

@@ -3,6 +3,7 @@
     android:id="@+id/notes_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black2"
     android:orientation="horizontal">
 
     <TextView

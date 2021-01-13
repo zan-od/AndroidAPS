@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="3dp">
 
     <LinearLayout
         android:id="@+id/overview_looplayout"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <TextView
+<!--        <TextView
             android:id="@+id/overview_activeprofile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +36,7 @@
             android:paddingBottom="6dp"
             android:text="TempTarget"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/mdtp_white" />
+            android:textColor="@color/mdtp_white" /> -->
 
     </LinearLayout>
 
