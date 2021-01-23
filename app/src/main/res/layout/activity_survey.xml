@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,16 +20,16 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/survey_id_label"
+                    android:id="@+id/id_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:labelFor="@+id/survey_id"
+                    android:labelFor="@+id/id"
                     android:text="@string/id"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
-                    android:id="@+id/survey_id"
+                    android:id="@+id/id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -44,16 +43,16 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/survey_age_label"
+                    android:id="@+id/age_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:labelFor="@+id/survey_age"
+                    android:labelFor="@+id/age"
                     android:text="@string/age"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <EditText
-                    android:id="@+id/survey_age"
+                    android:id="@+id/age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -69,16 +68,16 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/survey_weigth_label"
+                    android:id="@+id/weigth_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:labelFor="@+id/survey_weight"
+                    android:labelFor="@+id/weight"
                     android:text="@string/weight_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <EditText
-                    android:id="@+id/survey_weight"
+                    android:id="@+id/weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -94,16 +93,16 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/survey_TDD_label"
+                    android:id="@+id/TDD_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:labelFor="@+id/survey_weight"
+                    android:labelFor="@+id/weight"
                     android:text="@string/tdd_total"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <EditText
-                    android:id="@+id/survey_tdd"
+                    android:id="@+id/tdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -129,7 +128,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Spinner
-                android:id="@+id/survey_spinner"
+                android:id="@+id/spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -138,41 +137,37 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/survey_tdds"
+            android:id="@+id/tdds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
-            android:id="@+id/survey_tir"
+            android:id="@+id/tir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
-            android:id="@+id/survey_activity"
+            android:id="@+id/activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <Button
-            android:id="@+id/survey_submit"
-            android:background="@color/black"
+            android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit"
-            android:textColor="@color/rig22Blue"/>
+            android:text="@string/submit" />
 
         <Button
-            android:id="@+id/survey_profile"
-            android:background="@color/black"
+            android:id="@+id/profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/profile"
-            android:textColor="@color/rig22Blue"/>
+            android:text="@string/profile" />
 
         <TextView
             android:layout_width="wrap_content"

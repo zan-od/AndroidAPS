@@ -65,7 +65,7 @@
                 android:textStyle="bold" />
 
             <info.nightscout.androidaps.utils.ui.NumberPicker
-                android:id="@+id/actions_extendedbolus_insulin"
+                android:id="@+id/insulin"
                 android:layout_width="130dp"
                 android:layout_height="40dp" />
 
@@ -98,7 +98,7 @@
                 android:textStyle="bold" />
 
             <info.nightscout.androidaps.utils.ui.MinutesNumberPicker
-                android:id="@+id/actions_extendedbolus_duration"
+                android:id="@+id/duration"
                 android:layout_width="130dp"
                 android:layout_height="40dp" />
 
@@ -116,7 +116,9 @@
         </LinearLayout>
 
 
-        <include layout="@layout/okcancel" />
+        <include
+            android:id="@+id/okcancel"
+            layout="@layout/okcancel" />
 
     </LinearLayout>
 
