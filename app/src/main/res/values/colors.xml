@@ -12,7 +12,7 @@
     <color name="tabBgColorSelected">#238af3</color>
     <color name="deviations">#FF0000</color>
     <color name="cobAlert">#7484E2</color>
-    <color name="inrangebackground">#28238af3</color> /*2800FF00*/
+    <color name="inrangebackground">#28ffffff</color> /*2800FF00*/
     <color name="basebasal">#C83F51B5</color>
     <color name="graphgrid">#757575</color>
     <color name="warning">#ff1a1a</color>
