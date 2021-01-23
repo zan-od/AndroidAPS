@@ -149,62 +149,66 @@
             android:orientation="horizontal">
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
-                android:id="@+id/target_cancel"
+                android:id="@+id/overview_temptarget_cancel"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
                 android:layout_weight="0.5"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:drawableTop="@drawable/ic_target_cancel"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
                 android:text="@string/cancel"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/tempTargetConfirmation"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
-                android:id="@+id/eating_soon"
+                android:id="@+id/overview_temptarget_eating_soon"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
                 android:layout_weight="0.5"
-                android:drawableTop="@drawable/ic_target_eatingsoon"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:drawableTop="@drawable/ic_temptarget_low"
                 android:text="@string/eatingsoon"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/carbs"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
-                android:id="@+id/activity"
+                android:id="@+id/overview_temptarget_activity"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_marginEnd="-4dp"
                 android:layout_weight="0.5"
-                android:drawableTop="@drawable/ic_target_activity"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:drawableTop="@drawable/ic_temptarget_high"
                 android:text="@string/activity"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/exercise"
                 android:textSize="11sp" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
-                android:id="@+id/hypo"
+                android:id="@+id/overview_temptarget_hypo"
                 style="?android:attr/buttonStyle"
+                android:background="@color/black2"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_weight="0.5"
-                android:drawableTop="@drawable/ic_target_hypo"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:drawableTop="@drawable/ic_temptarget_high"
                 android:text="@string/hypo"
+                android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/low"
                 android:textSize="11sp" />
 
         </LinearLayout>
