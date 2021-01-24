@@ -55,11 +55,11 @@
     <color name="deviationred">#72FF0000</color>
     <color name="deviationblack">#72000000</color>
 
-    <color name="ribbonDefault">#000000</color> /*5a595b*/
-    <color name="ribbonWarning">#f4d700</color>
+    <color name="ribbonDefault">#212121</color> /*5a595b*/
+    <color name="ribbonWarning">#238af3</color>/*f4d700*/
     <color name="ribbonCritical">#ff0400</color>
     <color name="ribbonTextDefault">#FFFFFF</color>
-    <color name="ribbonTextWarning">#000000</color> /*303030*/
+    <color name="ribbonTextWarning">#FFFFFF</color> /*303030*/
 
     <color name="splashBackground">#2E2E2E</color>
 

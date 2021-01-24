@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-<!--            <include layout="@layout/overview_loop_pumpstatus_layout" /> -->
+           <include layout="@layout/overview_loop_pumpstatus_layout" />
 
             <include layout="@layout/overview_statuslights_layout" />
 
