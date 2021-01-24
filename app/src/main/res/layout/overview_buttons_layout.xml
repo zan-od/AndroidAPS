@@ -28,7 +28,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_treatmentbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -42,7 +42,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_insulinbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -55,7 +55,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_carbsbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -68,7 +68,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_wizardbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -81,7 +81,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_calibrationbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -95,7 +95,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_cgmbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
@@ -109,7 +109,7 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_quickwizardbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/gradien_grey_quader"
+            android:background="@drawable/button_background_50x50"
             android:layout_width="0px"
             android:layout_height="fill_parent"
             android:layout_marginEnd="-4dp"
