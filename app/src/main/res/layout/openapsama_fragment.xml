@@ -256,14 +256,18 @@
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
-                <Button
-                    android:id="@+id/openapsma_run"
-                    style="?android:attr/buttonStyle"
-                    android:background="@color/black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/openapsma_run"
-                    android:textColor="@color/rig22Blue"/>
+
+            <Button
+                android:id="@+id/openapsma_run"
+                style="?android:attr/buttonStyle"
+                android:background="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/openapsma_run"
+                android:textColor="@color/rig22Blue"/>
+
+        </LinearLayout>
+
 
         <View
             android:layout_width="fill_parent"
