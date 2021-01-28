@@ -6,37 +6,32 @@
     android:layout_height="wrap_content"
     android:paddingTop="3dp">
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@drawable/teiler1px"/>
-
     <LinearLayout
         android:id="@+id/overview_looplayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-
-
         <TextView
             android:id="@+id/overview_activeprofile"
+            android:background="@drawable/buttonshape"
             android:drawableLeft="@drawable/ic_user_profil"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
             android:text="Profile"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorLightGray"/>
+            android:textColor="@color/colorLightGray" />
 
         <TextView
             android:id="@+id/overview_temptarget"
+            android:background="@drawable/buttonshape"
             android:drawableLeft="@drawable/ic_tt"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
-
+            android:layout_height="28dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
             android:text="TempTarget"
@@ -65,13 +60,5 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
-
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@drawable/teiler1px"/>
-
-
 
 </LinearLayout>

@@ -663,8 +663,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         // temp target
         val tempTarget = treatmentsPlugin.tempTargetFromHistory
         if (tempTarget != null) {
-            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.white))
-            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.rig22Blue))
+            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.rig22Blue))
+//            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.rig22Blue))
             overview_temptarget?.text = Profile.toTargetRangeString(tempTarget.low, tempTarget.high, Constants.MGDL, units) + " " + DateUtil.untilString(tempTarget.end(), resourceHelper)
         } else {
             // If the target is not the same as set in the profile then oref has overridden it
@@ -674,10 +674,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 aapsLogger.debug("Adjusted target. Profile: ${profile.targetMgdl} APS: $targetUsed")
                 overview_temptarget?.text = Profile.toTargetRangeString(targetUsed, targetUsed, Constants.MGDL, units)
                 overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
-                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.tempTargetBackground))
+//                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.tempTargetBackground))
             } else {
                 overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextDefault))
-                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
+//                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
                 overview_temptarget?.text = Profile.toTargetRangeString(profile.targetLowMgdl, profile.targetHighMgdl, Constants.MGDL, units)
             }
         }
@@ -719,10 +719,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         // Active profile
         overview_activeprofile?.text = profileFunction.getProfileNameWithDuration()
         if (profile.percentage != 100 || profile.timeshift != 0) {
-            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
+//            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
             overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
         } else {
-            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
+//            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
             overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextDefault))
         }
 
