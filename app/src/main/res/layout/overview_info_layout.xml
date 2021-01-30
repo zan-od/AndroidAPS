@@ -232,7 +232,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_bolus_info" />
+            app:srcCompat="@drawable/ic_bolus" />
 
         <TextView
             android:id="@+id/overview_iob"

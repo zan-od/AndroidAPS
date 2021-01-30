@@ -13,8 +13,8 @@
 
         <Button
             android:id="@+id/nav_logsettings"
-            style="?android:attr/buttonStyle"
-            android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_zahnrad"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -27,8 +27,8 @@
 
        <Button
             android:id="@+id/log_send"
-            style="?android:attr/buttonStyle"
-           android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_mail"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -41,8 +41,8 @@
 
         <Button
             android:id="@+id/log_delete"
-            style="?android:attr/buttonStyle"
-            android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_delete_logs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -55,8 +55,8 @@
 
         <Button
             android:id="@+id/nav_export"
-            style="?android:attr/buttonStyle"
-            android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_export"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -69,8 +69,8 @@
 
         <Button
             android:id="@+id/nav_import"
-            style="?android:attr/buttonStyle"
-            android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_import"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -83,14 +83,14 @@
 
         <Button
             android:id="@+id/nav_resetdb"
-            style="?android:attr/buttonStyle"
-            android:background="@color/black"
+            android:background="@drawable/buttonshape"
+            android:drawableLeft="@drawable/ic_resetdb"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="3dp"
             android:layout_weight="0.5"
             android:text="@string/nav_resetdb"
             android:textColor="@color/rig22Blue" />

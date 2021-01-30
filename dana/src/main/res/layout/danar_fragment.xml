@@ -713,9 +713,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarprofile"
-                    android:background="@color/black"
+                    android:background="@drawable/buttonshape"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
+                    android:paddingTop="2dp"
                     android:text="@string/viewprofile"
                     android:textSize="0dp"/>
 
@@ -727,9 +728,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarhistory"
-                    android:background="@color/black"
+                    android:background="@drawable/buttonshape"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
+                    android:paddingTop="2dp"
                     android:text="@string/pumphistory"
                     android:textSize="0dp"/>
 
@@ -740,9 +742,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danarstats"
-                    android:background="@color/black"
+                    android:background="@drawable/buttonshape"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
+                    android:paddingTop="2dp"
                     android:text="@string/stats"
                     android:textSize="0dp"/>
 
@@ -753,9 +756,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_danar_useropt"
-                    android:background="@color/black"
+                    android:background="@drawable/buttonshape"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
+                    android:paddingTop="2dp"
                     android:text="@string/danar_useroptions"
                     android:textSize="0dp"/>
 
