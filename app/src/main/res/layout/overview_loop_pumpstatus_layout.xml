@@ -57,6 +57,7 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:text="@string/initializing"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
