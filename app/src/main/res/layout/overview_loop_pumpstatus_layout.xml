@@ -14,12 +14,12 @@
 
         <TextView
             android:id="@+id/overview_activeprofile"
-            android:background="@drawable/buttonshape"
-            android:drawableLeft="@drawable/ic_user_profil"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
+            android:background="@drawable/buttonshape"
+            android:drawableStart="@drawable/ic_user_profil"
             android:gravity="center_vertical|center_horizontal"
             android:text="Profile"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -28,7 +28,7 @@
         <TextView
             android:id="@+id/overview_temptarget"
             android:background="@drawable/buttonshape"
-            android:drawableLeft="@drawable/ic_tt"
+            android:drawableStart="@drawable/ic_tt"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_marginEnd="2dp"

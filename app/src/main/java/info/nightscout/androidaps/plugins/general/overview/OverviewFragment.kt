@@ -720,7 +720,9 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         overview_activeprofile?.text = profileFunction.getProfileNameWithDuration()
         if (profile.percentage != 100 || profile.timeshift != 0) {
 //            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
-            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
+            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.rig22Blue))
+//            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
+
         } else {
 //            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
             overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextDefault))
