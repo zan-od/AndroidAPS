@@ -12,7 +12,7 @@
     <color name="tabBgColorSelected">#238af3</color>
     <color name="deviations">#FF0000</color>
     <color name="cobAlert">#7484E2</color>
-    <color name="inrangebackground">#20ffffff</color> /*2800FF00*/
+    <color name="inrangebackground">#28ffffff</color> /*2800FF00*/
     <color name="basebasal">#C83F51B5</color>
     <color name="graphgrid">#757575</color>
     <color name="warning">#ff1a1a</color>
@@ -24,7 +24,7 @@
     <color name="defaulttext">#BBBBBB</color>
     <color name="defaulttextcolor">#B3FFFFFF</color>
 
-    <color name="tempTargetBackground">#238af3</color> /*77dd77*/
+    <color name="tempTargetBackground">#FFFFFF</color> /*77dd77*/
     <color name="tempTargetConfirmation">#77dd77</color>
     <color name="exercise">#67DFE8</color>
 
@@ -55,11 +55,11 @@
     <color name="deviationred">#72FF0000</color>
     <color name="deviationblack">#72000000</color>
 
-    <color name="ribbonDefault">#212121</color> /*5a595b*/
-    <color name="ribbonWarning">#238af3</color>/*f4d700*/
+    <color name="ribbonDefault">#000000</color> /*5a595b*/
+    <color name="ribbonWarning">#f4d700</color>
     <color name="ribbonCritical">#ff0400</color>
     <color name="ribbonTextDefault">#FFFFFF</color>
-    <color name="ribbonTextWarning">#238af3</color> /*303030*/
+    <color name="ribbonTextWarning">#000000</color> /*303030*/
 
     <color name="splashBackground">#2E2E2E</color>
 
@@ -75,8 +75,6 @@
     <color name="black">#000000</color>
     <color name="black2">#212121</color>
     <color name="rig22Blue">#238af3</color>
-    <color name="inrange">#238af3</color>
     <color name="amber">#FEA300</color>
-    <color name="transparent">#00000000</color>
 
 </resources>
