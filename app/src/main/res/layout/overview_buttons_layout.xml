@@ -55,11 +55,11 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_carbsbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/buttonshape"
-            android:layout_marginEnd="2dp"
             android:layout_width="0px"
             android:layout_height="fill_parent"
+            android:layout_marginEnd="2dp"
             android:layout_weight="0.5"
+            android:background="@drawable/buttonshape"
             android:drawableTop="@drawable/ic_cp_bolus_carbs"
             android:text="carbs"
             android:textColor="@color/white"
