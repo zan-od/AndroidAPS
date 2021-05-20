@@ -230,7 +230,7 @@ class GraphData(
         // create series
         addSeries(LineGraphSeries(Array(targetsSeriesArray.size) { i -> targetsSeriesArray[i] }).also {
             it.isDrawBackground = false
-            it.color = resourceHelper.gc(R.color.tempTargetBackground)
+            it.color = resourceHelper.gc(R.color.loopGreen)
             it.thickness = 2
         })
     }

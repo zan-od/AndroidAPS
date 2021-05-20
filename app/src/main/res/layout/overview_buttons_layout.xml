@@ -42,12 +42,13 @@
         <info.nightscout.androidaps.utils.ui.SingleClickButton
             android:id="@+id/overview_insulinbutton"
             style="?android:attr/buttonStyle"
-            android:background="@drawable/buttonshape"
-            android:layout_marginEnd="2dp"
             android:layout_width="0px"
             android:layout_height="fill_parent"
+            android:layout_marginEnd="2dp"
             android:layout_weight="0.5"
+            android:background="@drawable/buttonshape"
             android:drawableTop="@drawable/ic_bolus"
+            android:drawablePadding="2px"
             android:text="@string/overview_insulin_label"
             android:textColor="@color/white"
             android:textSize="0sp" />

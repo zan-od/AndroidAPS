@@ -30,7 +30,7 @@
     <color name="listdelimiter">#505050</color>
 
     <!--    BgReading-->
-    <color name="inrange">#77dd77</color> //#00FF00
+    <color name="inrange">#00C03E</color> //#00FF00 #77dd77
     <color name="low">#EB5656</color> //FF0000
     <color name="high">#FFC145</color> //FFFF00
     <color name="iob">#1e88e5</color>

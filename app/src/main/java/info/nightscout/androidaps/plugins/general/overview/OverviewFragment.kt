@@ -563,8 +563,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         if (lastBG != null) {
             val color = when {
                 lastBG.valueToUnits(units) < lowLine  -> resourceHelper.gc(R.color.low)
-                lastBG.valueToUnits(units) > highLine -> resourceHelper.gc(R.color.high)
-                else                                  -> resourceHelper.gc(R.color.inrange)
+                lastBG.valueToUnits(units) > highLine -> resourceHelper.gc(R.color.amber)
+                else                                  -> resourceHelper.gc(R.color.loopGreen)
             }
 
             overview_bg?.text = lastBG.valueToUnitsToString(units)
