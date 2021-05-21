@@ -141,6 +141,7 @@
     <string name="setbasalquestion">Accept new temp basal:</string>
     <string name="overview_treatment_label">Treatment</string>
     <string name="overview_calculator_label">Calculator</string>
+    <string name="overview_carb_label">Carbs</string>
     <string name="constraintapllied">Constraint applied!</string>
     <string name="sms_bolus">Bolus:</string>
     <string name="basal">Basal</string>

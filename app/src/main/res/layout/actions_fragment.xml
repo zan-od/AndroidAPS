@@ -26,7 +26,55 @@
             android:layout_height="wrap_content"
             android:padding="10dip"
 
-            app:columnCount="2">
+            app:columnCount="3">
+
+            <info.nightscout.androidaps.utils.ui.SingleClickButton
+                android:id="@+id/actions_insulinbutton"
+                style="@style/ButtonSmallFontStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:drawableTop="@drawable/ic_bolus"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="10dp"
+                android:text="@string/overview_insulin_label"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
+
+        <info.nightscout.androidaps.utils.ui.SingleClickButton
+            android:id="@+id/acions_wizardbutton"
+            style="@style/ButtonSmallFontStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:drawableTop="@drawable/ic_calculator"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="10dp"
+            android:text="@string/overview_calculator_label"
+            app:layout_column="1"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_row="0"/>
+
+            <info.nightscout.androidaps.utils.ui.SingleClickButton
+                android:id="@+id/actions_carbsbutton"
+                style="@style/ButtonSmallFontStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:drawableTop="@drawable/ic_cp_bolus_carbs"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="10dp"
+                android:text="@string/overview_carb_label"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="0" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_profileswitch"
@@ -42,7 +90,7 @@
                 app:layout_column="0"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
-                app:layout_row="0" />
+                app:layout_row="1" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_temptarget"
@@ -58,7 +106,7 @@
                 app:layout_column="1"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
-                app:layout_row="0" />
+                app:layout_row="1" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_settempbasal"
@@ -70,7 +118,7 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:text="@string/overview_tempbasal_button"
-                app:layout_column="0"
+                app:layout_column="2"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
                 app:layout_row="1" />
@@ -86,7 +134,7 @@
                 android:paddingRight="0dp"
                 android:text="@string/canceltemp"
                 android:visibility="gone"
-                app:layout_column="0"
+                app:layout_column="2"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
                 app:layout_row="1" />
@@ -101,26 +149,59 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:text="@string/overview_extendedbolus_button"
-                app:layout_column="1"
+                app:layout_column="0"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
-                app:layout_row="1" />
+                app:layout_row="2" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_extendedbolus_cancel"
                 style="@style/ButtonSmallFontStyle"
-                android:background="@color/black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@color/black"
                 android:drawableTop="@drawable/ic_actions_cancelextbolus"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:text="@string/overview_extendedbolus_cancel_button"
                 android:visibility="gone"
+                app:layout_column="0"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="2" />
+
+
+            <info.nightscout.androidaps.utils.ui.SingleClickButton
+                android:id="@+id/actions_cgmbutton"
+                style="@style/ButtonSmallFontStyle"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:background="@color/black"
+                android:drawableTop="@drawable/ic_xdrip"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="10dp"
+                android:text="@string/overview_cgm"
                 app:layout_column="1"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill"
-                app:layout_row="1" />
+                app:layout_row="2" />
+
+            <info.nightscout.androidaps.utils.ui.SingleClickButton
+                android:id="@+id/actions_bgcheck"
+                style="@style/ButtonSmallFontStyle"
+                android:background="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:drawableTop="@drawable/ic_cp_bgcheck"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="10dp"
+                android:text="@string/careportal_bgcheck"
+                app:layout_column="2"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill"
+                app:layout_row="2" />
 
         </androidx.gridlayout.widget.GridLayout>
 
@@ -144,22 +225,6 @@
             android:layout_height="wrap_content"
             android:padding="10dip"
             app:columnCount="2">
-
-            <info.nightscout.androidaps.utils.ui.SingleClickButton
-                android:id="@+id/actions_bgcheck"
-                style="@style/ButtonSmallFontStyle"
-                android:background="@color/black"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:drawableTop="@drawable/ic_cp_bgcheck"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingBottom="10dp"
-                android:text="@string/careportal_bgcheck"
-                app:layout_column="0"
-                app:layout_columnWeight="1"
-                app:layout_gravity="fill"
-                app:layout_row="2" />
 
             <info.nightscout.androidaps.utils.ui.SingleClickButton
                 android:id="@+id/actions_fill"
