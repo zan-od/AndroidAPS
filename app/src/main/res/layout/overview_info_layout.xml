@@ -228,11 +228,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overview_bg">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_bolus" />
+            android:text="@string/iob" />
 
         <TextView
             android:id="@+id/overview_iob"
@@ -257,12 +257,12 @@
         app:layout_constraintStart_toEndOf="@+id/overview_iob_llayout"
         app:layout_constraintTop_toTopOf="@+id/overview_iob_llayout">
 
-        <ImageView
+        <TextView
             android:id="@+id/overview_carbs_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/anim_carbs" />
+            android:text="@string/cob" />
 
         <TextView
             android:id="@+id/overview_cob"
@@ -287,12 +287,12 @@
         app:layout_constraintStart_toEndOf="@+id/overview_cob_llayout"
         app:layout_constraintTop_toTopOf="@+id/overview_iob_llayout">
 
-        <ImageView
+        <TextView
             android:id="@+id/overview_basebasal_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_cp_basal_no_tbr" />
+            android:text="@string/tempbasal_label_short" />
 
         <TextView
             android:id="@+id/overview_basebasal"
@@ -317,11 +317,11 @@
         app:layout_constraintStart_toEndOf="@+id/overview_basal_llayout"
         app:layout_constraintTop_toTopOf="@+id/overview_iob_llayout">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_actions_startextbolus" />
+            android:text="@string/extended_bolus_short" />
 
         <TextView
             android:id="@+id/overview_extendedbolus"
@@ -346,12 +346,12 @@
         app:layout_constraintStart_toEndOf="@+id/overview_extended_llayout"
         app:layout_constraintTop_toTopOf="@+id/overview_iob_llayout">
 
-        <ImageView
+        <TextView
             android:id="@+id/overview_sensitivity_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_swap_vert_black_48dp_green" />
+            android:text="@string/sensitivity_shortname" />
 
         <TextView
             android:id="@+id/overview_sensitivity"

@@ -83,6 +83,7 @@
     <string name="tempbasals_netinsulin_label_string">Ins:</string>
     <string name="tempbasals_iob_label_string">IOB:</string>
     <string name="tempbasals_iobtotal_label_string">Total IOB:</string>
+    <string name="tempbasal_label_short">TBR</string>
     <string name="treatments_wizard_bg_label">BG</string>
     <string name="treatments_wizard_tt_label">TT</string>
     <string name="treatments_wizard_carbs_label">Carbs</string>
@@ -1027,6 +1028,7 @@
     <string name="stopped">Stopped</string>
     <string name="tbr_formatter">%1$d%% for %2$d / %3$d min</string>
     <string name="extended_bolus">Extended bolus</string>
+    <string name="extended_bolus_short">EB</string>
     <string name="multiwave_bolus">Multiwave bolus</string>
     <string name="eb_formatter">%1$.2f / %2$.2f U for %3$d min</string>
     <string name="enable_tbr_over_notification">Enable notification of TBR end\n(pump setting)</string>

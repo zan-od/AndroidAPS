@@ -697,11 +697,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         overview_basebasal?.setTextColor(activeTemp?.let { resourceHelper.gc(R.color.basal) }
             ?: resourceHelper.gc(R.color.defaulttextcolor))
 
-        overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_no_tbr)
+        /*overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_no_tbr)
         val percentRate = activeTemp?.tempBasalConvertedToPercent(System.currentTimeMillis(), profile)
             ?: 100
         if (percentRate > 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_high)
-        if (percentRate < 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_low)
+        if (percentRate < 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_low)*/
 
         // Extended bolus
         val extendedBolus = treatmentsPlugin.getExtendedBolusFromHistory(System.currentTimeMillis())
@@ -788,11 +788,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         overview_uploader?.setOnClickListener { activity?.let { OKDialog.show(it, resourceHelper.gs(R.string.uploader), nsDeviceStatus.extendedUploaderStatus) } }
 
         // Sensitivity
-        if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value()) {
+/*        if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value()) {
             overview_sensitivity_icon?.setImageResource(R.drawable.ic_swap_vert_black_48dp_green)
         } else {
             overview_sensitivity_icon?.setImageResource(R.drawable.ic_x_swap_vert)
-        }
+        }*/
 
         overview_sensitivity?.text =
             iobCobCalculatorPlugin.getLastAutosensData("Overview")?.let { autosensData ->
