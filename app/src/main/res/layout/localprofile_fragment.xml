@@ -93,7 +93,8 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:weightSum="5"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            >
 
             <TextView
                 android:id="@+id/dia_tab"
@@ -102,6 +103,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/dia_short"
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -112,6 +114,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/ic_short"
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -122,6 +125,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/isf_short"
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -132,6 +136,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/basal_short"
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
@@ -142,6 +147,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/target_short"
+                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -164,7 +170,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:labelFor="@+id/localprofile_name"
-                    android:text="@string/profile_name"
+                    android:text="@string/profile_name_change"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
