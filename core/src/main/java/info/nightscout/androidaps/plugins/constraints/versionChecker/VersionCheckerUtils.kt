@@ -42,6 +42,9 @@ class VersionCheckerUtils @Inject constructor(
             )
         }
 
+        if (sp.getBoolean(R.string.key_bypass_old_version_check, false))
+            return;
+
         // If we are good, only check once every day.
         if (dateUtil.now() > sp.getLong(
                 R.string.key_last_time_this_version_detected,
