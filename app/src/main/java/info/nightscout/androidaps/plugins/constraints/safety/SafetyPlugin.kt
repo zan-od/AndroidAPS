@@ -17,6 +17,7 @@ import info.nightscout.androidaps.utils.Round
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.androidaps.R
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.floor
