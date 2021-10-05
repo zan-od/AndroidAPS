@@ -1093,9 +1093,9 @@ var determine_basal = function determine_basal(glucose_status, currenttemp, iob_
             var mealInsulinReq = round( meal_data.mealCOB / profile.carb_ratio ,3);
             // mod 10: make the irregular mutiplier a user input
             var smb_max_range = profile.smb_max_range_extension;
-            //if (smb_max_range > 1) {
-            //    console.error("SMB max range extended from default by factor", smb_max_range)
-            //}
+            if (smb_max_range > 1) {
+                console.error("SMB max range extended from default by factor", smb_max_range)
+            }
             if (typeof profile.maxSMBBasalMinutes === 'undefined' ) {
                 var maxBolus = round(smb_max_range * profile.current_basal * 30 / 60 ,1);
                 console.error("profile.maxSMBBasalMinutes undefined: defaulting to 30m");
