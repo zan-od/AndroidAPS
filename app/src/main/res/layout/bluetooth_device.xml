@@ -5,7 +5,7 @@
     android:paddingLeft="16dp"
     android:textSize="20sp"
     android:gravity="center_vertical"
-    android:textColor="#FFFFFF"
+    android:textColor="@color/rig22Blue"
     tools:text="Test"
     android:background="?selectableItemBackground"
     android:layout_height="56dp" />

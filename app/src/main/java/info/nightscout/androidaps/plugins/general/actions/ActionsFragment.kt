@@ -1,5 +1,6 @@
 package info.nightscout.androidaps.plugins.general.actions
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,15 +21,19 @@ import info.nightscout.androidaps.events.*
 import info.nightscout.androidaps.historyBrowser.HistoryBrowseActivity
 import info.nightscout.androidaps.interfaces.ActivePluginProvider
 import info.nightscout.androidaps.interfaces.CommandQueueProvider
+import info.nightscout.androidaps.interfaces.PluginType
 import info.nightscout.androidaps.interfaces.ProfileFunction
 import info.nightscout.androidaps.logging.AAPSLogger
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.general.actions.defs.CustomAction
 import info.nightscout.androidaps.plugins.general.overview.StatusLightHandler
 import info.nightscout.androidaps.plugins.pump.omnipod.OmnipodPumpPlugin
+import info.nightscout.androidaps.plugins.source.DexcomPlugin
+import info.nightscout.androidaps.plugins.source.XdripPlugin
 import info.nightscout.androidaps.queue.Callback
 import info.nightscout.androidaps.skins.SkinProvider
 import info.nightscout.androidaps.utils.FabricPrivacy
+import info.nightscout.androidaps.utils.ToastUtils
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
 import info.nightscout.androidaps.utils.buildHelper.BuildHelper
 import info.nightscout.androidaps.utils.extensions.plusAssign
@@ -61,6 +66,9 @@ class ActionsFragment : DaggerFragment() {
     @Inject lateinit var protectionCheck: ProtectionCheck
     @Inject lateinit var skinProvider: SkinProvider
     @Inject lateinit var config: Config
+    @Inject lateinit var dexcomPlugin: DexcomPlugin
+    @Inject lateinit var xdripPlugin: XdripPlugin
+
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
@@ -88,12 +96,33 @@ class ActionsFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        actions_insulinbutton.setOnClickListener {
+            InsulinDialog().show(childFragmentManager, "Actions")
+        }
+        acions_wizardbutton.setOnClickListener {
+            WizardDialog().show(childFragmentManager, "Actions")
+        }
+        actions_carbsbutton.setOnClickListener {
+            CarbsDialog().show(childFragmentManager, "Actions")
+        }
         actions_profileswitch.setOnClickListener {
             ProfileSwitchDialog().show(childFragmentManager, "Actions")
         }
         actions_temptarget.setOnClickListener {
             TempTargetDialog().show(childFragmentManager, "Actions")
         }
+
+        actions_cgmbutton.setOnClickListener {
+            if (xdripPlugin.isEnabled(PluginType.BGSOURCE))
+                openCgmApp("com.eveningoutpost.dexdrip")
+            else if (dexcomPlugin.isEnabled(PluginType.BGSOURCE)) {
+                dexcomPlugin.findDexcomPackageName()?.let {
+                    openCgmApp(it)
+                }
+                    ?: ToastUtils.showToastInUiThread(activity, resourceHelper.gs(R.string.dexcom_app_not_installed))
+            }
+        }
+
         actions_extendedbolus.setOnClickListener {
             activity?.let { activity ->
                 protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable {
@@ -305,6 +334,19 @@ class ActionsFragment : DaggerFragment() {
         }
     }
 
+    private fun openCgmApp(packageName: String) {
+        context?.let {
+            val packageManager = it.packageManager
+            try {
+                val intent = packageManager.getLaunchIntentForPackage(packageName)
+                    ?: throw ActivityNotFoundException()
+                intent.addCategory(Intent.CATEGORY_LAUNCHER)
+                it.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                OKDialog.show(it, "", resourceHelper.gs(R.string.error_starting_cgm))
+            }
+        }
+    }
     private fun removePumpCustomActions() {
         for (customButton in pumpCustomButtons) action_buttons_layout?.removeView(customButton)
         pumpCustomButtons.clear()

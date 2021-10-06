@@ -83,6 +83,7 @@
     <string name="tempbasals_netinsulin_label_string">Ins:</string>
     <string name="tempbasals_iob_label_string">IOB:</string>
     <string name="tempbasals_iobtotal_label_string">Total IOB:</string>
+    <string name="tempbasal_label_short">TBR</string>
     <string name="treatments_wizard_bg_label">BG</string>
     <string name="treatments_wizard_tt_label">TT</string>
     <string name="treatments_wizard_carbs_label">Carbs</string>
@@ -141,6 +142,7 @@
     <string name="setbasalquestion">Accept new temp basal:</string>
     <string name="overview_treatment_label">Treatment</string>
     <string name="overview_calculator_label">Calculator</string>
+    <string name="overview_carb_label">Carbs</string>
     <string name="constraintapllied">Constraint applied!</string>
     <string name="sms_bolus">Bolus:</string>
     <string name="basal">Basal</string>
@@ -325,6 +327,14 @@
     <string name="openapsma_autosensdata_label">Autosens data</string>
     <string name="openapsma_scriptdebugdata_label">Script debug</string>
     <string name="openapsama_useautosens">Use Autosens feature</string>
+    <string name="openapsama_useautoisf">Use Autoisf feature</string>
+    <string name="a52_risk_enable">A52 risk enable</string>
+    <string name="a52_risk_enable_summary">Flag to disable Medtronic A52 error safety (should lead to more agressive bolusing)</string>
+    <string name="exercise_mode_enable">Enable exercise mode</string>
+    <string name="exercise_mode_enable_summary">Flag to engage the exercise mode - increased sensitivity, decreased profile for high temp targets</string>
+    <string name="engineering_mode">Engineering mode</string>
+    <string name="engineering_mode_summary">Flag to enable engineering mode (UNSAFE)</string>
+    <string name="bypass_old_version_check_title">Skip checking for new version (not recommended)</string>
     <string name="refresheventsfromnightscout">Refresh events from NS</string>
     <string name="deletefuturetreatments">Delete treatments in the future</string>
     <string name="eatingsoon">Eating Soon</string>
@@ -349,10 +359,16 @@
     <string name="profile">Profile</string>
     <string name="openapsama_max_daily_safety_multiplier_summary">Default value: 3 This is a key OpenAPS safety cap. What this does is limit your basals to be 3x (in this people) your biggest basal rate. You likely will not need to change this, but you should be aware that’s what is discussed about “3x max daily; 4x current” for safety caps.</string>
     <string name="openapsama_current_basal_safety_multiplier_summary">Default value: 4 This is the other half of the key OpenAPS safety caps, and the other half of “3x max daily; 4x current” of the safety caps. This means your basal, regardless of max basal set on your pump, cannot be any higher than this number times the current level of your basal. This is to prevent people from getting into dangerous territory by setting excessively high max basals before understanding how the algorithm works. Again, the default is 4x; most people will never need to adjust this and are instead more likely to need to adjust other settings if they feel like they are “running into” this safety cap.</string>
+    <string name="openapsama_smb_delivery_ratio_summary">Default value: 0.5 This is another key OpenAPS safety cap, and specifies what share of the total insulin required can be delivered as SMB. This is to prevent people from getting into dangerous territory by setting SMB requests from the caregivers phone at the same time. Increase this experimental value slowly and with caution.</string>
+    <string name="openapsama_smb_max_range_extension_summary">Default value: 1 This is another key OpenAPS safety cap, and specifies by what factor you can exceed the regular 120 maxSMB/maxUAM minutes. Increase this experimental value slowly and with caution.</string>
     <string name="key_openapsama_autosens_max" translatable="false">autosens_max</string>
     <string name="openapsama_autosens_max_summary">Default value: 1.2\nThis is a multiplier cap for autosens (and soon autotune) to set a 20%% max limit on how high the autosens ratio can be, which in turn determines how high autosens can adjust basals, how low it can adjust ISF, and how low it can set the BG target.</string>
     <string name="key_openapsama_autosens_min" translatable="false">autosens_min</string>
     <string name="openapsama_autosens_min_summary">Default value: 0.7\nThe other side of the autosens safety limits, putting a cap on how low autosens can adjust basals, and how high it can adjust ISF and BG targets.</string>
+    <string name="key_openapsama_autoisf_max" translatable="false">autoisf_max</string>
+    <string name="openapsama_autoisf_max_summary">Default value: 1.2\nThis is a multiplier cap for autoISF to set a limit on how high the autoISF ratio can be, which in turn determines how low it can adjust ISF.</string>
+    <string name="key_openapsama_autoisf_hourlychange" translatable="false">autoisf_hourlychange</string>
+    <string name="openapsama_autoisf_hourlychange_summary">Default value: 0.2\nThis is the rate at which autoISF grows per hour assuming bg is twice the target. With a value of 1.0 it will have reduced ISF to 50% after 1 hour of bg at twice the target.\nWith 0.0 the effect of autoISF is effectively disabled.</string>
     <string name="key_openapsama_autosens_adjusttargets" translatable="false">autosens_adjust_targets</string>
     <string name="openapsama_autosens_adjusttargets">Autosens adjust targets, too</string>
     <string name="openapsama_autosens_adjusttargets_summary">Default value: true\nThis is used to allow autosens to adjust BG targets, in addition to ISF and basals.</string>
@@ -626,6 +642,8 @@
     <string name="smbmaxminutes_summary">Max minutes of basal to limit SMB to</string>
     <string name="uamsmbmaxminutes">UAM SMB max minutes</string>
     <string name="uamsmbmaxminutes_summary">Max minutes of basal to limit SMB to for UAM</string>
+    <string name="halfbasalexercisetarget">Half basal exercise temp target</string>
+    <string name="halfbasalexercisetarget_summary">BG (mg/dl) temp target to half the basal need when exercising</string>
     <string name="key_carbsReqThreshold" translatable="false">carbsReqThreshold</string>
     <string name="carbsReqThreshold">Minimum Carbs Required For Suggestion</string>
     <string name="carbsReqThreshold_summary">Minimum grams of carbs to display a carbs suggestion alert. Carbs suggestions below this number will not trigger a notification.</string>
@@ -689,11 +707,14 @@
     <string name="key_enableSMB_with_COB" translatable="false">enableSMB_with_COB</string>
     <string name="key_enableSMB_with_temptarget" translatable="false">enableSMB_with_temptarget</string>
     <string name="key_enableSMB_after_carbs" translatable="false">enableSMB_after_carbs</string>
+    <string name="key_enableSMB_ignore" translatable="false">enableSMB_ignore</string>
     <string name="key_allowSMB_with_high_temptarget" translatable="false">enableSMB_with_high_temptarget</string>
     <string name="enablesmbalways">Enable SMB always</string>
     <string name="enablesmbalways_summary">Enable SMB always independently to boluses. Possible only with BG source with nice filtering of data like G5</string>
     <string name="enablesmbaftercarbs">Enable SMB after carbs</string>
     <string name="enablesmbaftercarbs_summary">Enable SMB for 6h after carbs, even with 0 COB. Possible only with BG source with nice filtering of data like G5</string>
+    <string name="enablesmbignore">Enable SMB disregarding BG source (UNSAFE)</string>
+    <string name="enablesmbaftercarbs_ignore">Enable SMB not caring about noisy BG source (UNSAFE)</string>
     <string name="enablesmbwithcob">Enable SMB with COB</string>
     <string name="enablesmbwithcob_summary">Enable SMB when there is COB active.</string>
     <string name="enablesmbwithtemptarget">Enable SMB with temp targets</string>
@@ -786,6 +807,8 @@
     <string name="key_openapsma_max_basal" translatable="false">openapsma_max_basal</string>
     <string name="key_openapsama_current_basal_safety_multiplier" translatable="false">openapsama_current_basal_safety_multiplier</string>
     <string name="key_openapsama_max_daily_safety_multiplier" translatable="false">openapsama_max_daily_safety_multiplier</string>
+    <string name="key_openapsama_smb_delivery_ratio" translatable="false">openapsama_smb_delivery_ratio</string>
+    <string name="key_openapsama_smb_max_range_extension" translatable="false">openapsama_smb_max_range_extension</string>
     <string name="maxbasalmultiplier">max basal multiplier</string>
     <string name="maxdailybasalmultiplier">max daily basal multiplier</string>
     <string name="key_openapsma_max_iob" translatable="false">openapsma_max_iob</string>
@@ -801,6 +824,10 @@
     <string name="key_treatmentssafety_maxcarbs" translatable="false">treatmentssafety_maxcarbs</string>
     <string name="unsafeusage">unsafe usage</string>
     <string name="key_openapsama_useautosens" translatable="false">openapsama_useautosens</string>
+    <string name="key_openapsama_useautoisf" translatable="false">openapsama_useautoisf</string>
+    <string name="key_a52_risk_enable" translatable="false">a52_risk_enable</string>
+    <string name="key_exercise_mode_enable" translatable="false">openapssmb_exercise_mode</string>
+    <string name="key_engineering_mode" translatable="false">engineering_mode</string>
     <string name="readstatusfailed">Read status failed</string>
     <string name="record_pump_site_change">Record pump site change</string>
     <string name="record_insulin_cartridge_change">Record insulin cartridge change</string>
@@ -810,6 +837,7 @@
     <string name="iobcobcalculator" translatable="false">IobCobCalculator</string>
     <string name="reset">reset</string>
     <string name="key_openapssmb_max_iob" translatable="false">openapsmb_max_iob</string>
+    <string name="key_openapssmb_half_basal_exercise_target" translatable="false">openapssmb_half_basal_exercise_target</string>
     <string name="openapssmb_maxiob_title">Maximum total IOB OpenAPS can\'t go over [U]</string>
     <string name="openapssmb_maxiob_summary">This value is called Max IOB in OpenAPS context\nOpenAPS will not add more insulin if current IOB is greater than this value</string>
     <string name="pump_stopped">Pump stopped</string>
@@ -845,9 +873,13 @@
     <string name="key_always_use_shortavg" translatable="false">always_use_shortavg</string>
     <string name="openapsama_autosens_max">Max autosens ratio</string>
     <string name="openapsama_autosens_min">Min autosens ratio</string>
+    <string name="openapsama_autoisf_max">Max autoisf ratio</string>
+    <string name="openapsama_autoisf_hourlychange">autoisf hourly increment</string>
     <string name="openapsama_bolussnooze_dia_divisor">Bolus snooze dia divisor</string>
     <string name="openapsama_max_daily_safety_multiplier">Max daily safety multiplier</string>
     <string name="openapsama_current_basal_safety_multiplier">Current basal safety multiplier</string>
+    <string name="openapsama_smb_delivery_ratio">SMB delivery ratio</string>
+    <string name="openapsama_smb_max_range_extension">SMB/UAM max range extension</string>
     <string name="value_unavailable_short">n/a</string>
     <string name="key_virtualpump_uploadstatus" translatable="false">virtualpump_uploadstatus</string>
     <string name="virtualpump_type">Virtual Pump Type</string>
@@ -996,6 +1028,7 @@
     <string name="stopped">Stopped</string>
     <string name="tbr_formatter">%1$d%% for %2$d / %3$d min</string>
     <string name="extended_bolus">Extended bolus</string>
+    <string name="extended_bolus_short">EB</string>
     <string name="multiwave_bolus">Multiwave bolus</string>
     <string name="eb_formatter">%1$.2f / %2$.2f U for %3$d min</string>
     <string name="enable_tbr_over_notification">Enable notification of TBR end\n(pump setting)</string>
@@ -1184,7 +1217,7 @@
     <string name="key_boluswizard_percentage" translatable="false">boluswizard_percentage</string>
     <string name="partialboluswizard">Deliver this part of bolus wizard result [%]</string>
     <string name="deliverpartofboluswizard">Bolus wizard performs calculation but only this part of calculated insulin is delivered. Useful with SMB algorithm.</string>
-    <string name="loading">Loading ...</string>
+    <string name="loading">Loading …</string>
     <string name="snooze">Snooze</string>
     <string name="time_range">Time range</string>
     <string name="timerange_value">Time is between %1$s and %2$s</string>
@@ -1199,6 +1232,7 @@
     <string name="boluswizard">Bolus wizard</string>
     <string name="unit_minute_short">min</string>
     <string name="profile_name">Profile name:</string>
+    <string name="profile_name_change">Change profile name:</string>
     <string name="selected_profile">Selected:</string>
     <string name="unitsnosemicolon">Units</string>
     <string name="doyouwantswitchprofile">Do you want to switch profile and discard changes made to current profile?</string>
@@ -1380,5 +1414,7 @@
     <string name="timetoeat">Time to eat</string>
     <string name="fabric_upload_disabled">Crash logs upload disabled!</string>
     <string name="graph_menu_divider_header">Graph</string>
+    <string name="chart_menu">Chart menu</string>
+    <string name="clear_filter">Clear filter</string>
 
 </resources>

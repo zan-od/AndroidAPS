@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="3dp">
 
     <LinearLayout
         android:id="@+id/overview_looplayout"
@@ -14,28 +15,28 @@
         <TextView
             android:id="@+id/overview_activeprofile"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="5dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
+            android:background="@drawable/buttonshape"
+            android:drawableStart="@drawable/ic_user_profil"
             android:gravity="center_vertical|center_horizontal"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:text="Profile"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:text="@string/careportal_newnstreatment_profile_label"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/colorLightGray" />
 
         <TextView
             android:id="@+id/overview_temptarget"
+            android:background="@drawable/buttonshape"
+            android:drawableStart="@drawable/ic_tt"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_height="28dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:text="TempTarget"
+            android:text="@string/temptargetcompared"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/mdtp_white" />
+            android:textColor="@color/colorLightGray" />
 
     </LinearLayout>
 
@@ -56,9 +57,9 @@
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:text="@string/initializing"
+            android:textColor="@color/white"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
-
 
 </LinearLayout>

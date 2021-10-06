@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="1dp"
-    card_view:cardBackgroundColor="@color/cardColorBackground"
+    card_view:cardBackgroundColor="@color/black2"
     card_view:cardCornerRadius="6dp">
 
     <LinearLayout
@@ -28,7 +28,9 @@
             android:id="@+id/notification_dismiss"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:text="@string/dismiss" />
+            android:text="@string/dismiss"
+            android:background="@color/black2"
+            android:textColor="@color/rig22Blue"/>
 
     </LinearLayout>
 

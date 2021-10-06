@@ -281,12 +281,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         if (childFragmentManager.isStateSaved) return
         activity?.let { activity ->
             when (v.id) {
-                R.id.overview_treatmentbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) TreatmentDialog().show(childFragmentManager, "Overview") })
-                R.id.overview_wizardbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) WizardDialog().show(childFragmentManager, "Overview") })
-                R.id.overview_insulinbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) InsulinDialog().show(childFragmentManager, "Overview") })
-                R.id.overview_quickwizardbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) onClickQuickWizard() })
-                R.id.overview_carbsbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) CarbsDialog().show(childFragmentManager, "Overview") })
-                R.id.overview_temptarget -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { if(isAdded) TempTargetDialog().show(childFragmentManager, "Overview") })
+                R.id.overview_treatmentbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { TreatmentDialog().show(childFragmentManager, "Overview") })
+                R.id.overview_wizardbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { WizardDialog().show(childFragmentManager, "Overview") })
+                R.id.overview_insulinbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { InsulinDialog().show(childFragmentManager, "Overview") })
+                R.id.overview_quickwizardbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { onClickQuickWizard() })
+                R.id.overview_carbsbutton -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { CarbsDialog().show(childFragmentManager, "Overview") })
+                R.id.overview_temptarget -> protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { TempTargetDialog().show(childFragmentManager, "Overview") })
 
                 R.id.overview_activeprofile -> {
                     ProfileViewerDialog().also { pvd ->
@@ -345,7 +345,7 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
 
                 R.id.overview_apsmode -> {
                     protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable {
-                        if(isAdded)  LoopDialog().also { dialog ->
+                        LoopDialog().also { dialog ->
                             dialog.arguments = Bundle().also { it.putInt("showOkCancel", 1) }
                         }.show(childFragmentManager, "Overview")
                     })
@@ -563,8 +563,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         if (lastBG != null) {
             val color = when {
                 lastBG.valueToUnits(units) < lowLine  -> resourceHelper.gc(R.color.low)
-                lastBG.valueToUnits(units) > highLine -> resourceHelper.gc(R.color.high)
-                else                                  -> resourceHelper.gc(R.color.inrange)
+                lastBG.valueToUnits(units) > highLine -> resourceHelper.gc(R.color.amber)
+                else                                  -> resourceHelper.gc(R.color.loopGreen)
             }
 
             overview_bg?.text = lastBG.valueToUnitsToString(units)
@@ -663,8 +663,8 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         // temp target
         val tempTarget = treatmentsPlugin.tempTargetFromHistory
         if (tempTarget != null) {
-            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
-            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
+            overview_temptarget?.setTextColor(resourceHelper.gc(R.color.rig22Blue))
+//            overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.rig22Blue))
             overview_temptarget?.text = Profile.toTargetRangeString(tempTarget.low, tempTarget.high, Constants.MGDL, units) + " " + DateUtil.untilString(tempTarget.end(), resourceHelper)
         } else {
             // If the target is not the same as set in the profile then oref has overridden it
@@ -674,10 +674,10 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                 aapsLogger.debug("Adjusted target. Profile: ${profile.targetMgdl} APS: $targetUsed")
                 overview_temptarget?.text = Profile.toTargetRangeString(targetUsed, targetUsed, Constants.MGDL, units)
                 overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
-                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.tempTargetBackground))
+//                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.tempTargetBackground))
             } else {
                 overview_temptarget?.setTextColor(resourceHelper.gc(R.color.ribbonTextDefault))
-                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
+//                overview_temptarget?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
                 overview_temptarget?.text = Profile.toTargetRangeString(profile.targetLowMgdl, profile.targetHighMgdl, Constants.MGDL, units)
             }
         }
@@ -697,11 +697,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         overview_basebasal?.setTextColor(activeTemp?.let { resourceHelper.gc(R.color.basal) }
             ?: resourceHelper.gc(R.color.defaulttextcolor))
 
-        overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_no_tbr)
+        /*overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_no_tbr)
         val percentRate = activeTemp?.tempBasalConvertedToPercent(System.currentTimeMillis(), profile)
             ?: 100
         if (percentRate > 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_high)
-        if (percentRate < 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_low)
+        if (percentRate < 100) overview_basebasal_icon?.setImageResource(R.drawable.ic_cp_basal_tbr_low)*/
 
         // Extended bolus
         val extendedBolus = treatmentsPlugin.getExtendedBolusFromHistory(System.currentTimeMillis())
@@ -719,10 +719,12 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         // Active profile
         overview_activeprofile?.text = profileFunction.getProfileNameWithDuration()
         if (profile.percentage != 100 || profile.timeshift != 0) {
-            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
-            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
+//            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonWarning))
+            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.rig22Blue))
+//            overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextWarning))
+
         } else {
-            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
+//            overview_activeprofile?.setBackgroundColor(resourceHelper.gc(R.color.ribbonDefault))
             overview_activeprofile?.setTextColor(resourceHelper.gc(R.color.ribbonTextDefault))
         }
 
@@ -786,11 +788,11 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
         overview_uploader?.setOnClickListener { activity?.let { OKDialog.show(it, resourceHelper.gs(R.string.uploader), nsDeviceStatus.extendedUploaderStatus) } }
 
         // Sensitivity
-        if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value()) {
+/*        if (sp.getBoolean(R.string.key_openapsama_useautosens, false) && constraintChecker.isAutosensModeEnabled().value()) {
             overview_sensitivity_icon?.setImageResource(R.drawable.ic_swap_vert_black_48dp_green)
         } else {
             overview_sensitivity_icon?.setImageResource(R.drawable.ic_x_swap_vert)
-        }
+        }*/
 
         overview_sensitivity?.text =
             iobCobCalculatorPlugin.getLastAutosensData("Overview")?.let { autosensData ->
@@ -846,11 +848,14 @@ class OverviewFragment : DaggerFragment(), View.OnClickListener, OnLongClickList
                     graphData.addBgReadings(fromTime, toTime, lowLine, highLine, apsResult?.predictions)
                 else graphData.addBgReadings(fromTime, toTime, lowLine, highLine, null)
 
-                // set manual x bounds to have nice steps
-                graphData.formatAxis(fromTime, endTime)
-
                 // Treatments
                 graphData.addTreatments(fromTime, endTime)
+
+                // set manual x bounds to have nice steps
+                graphData.setNumVerticalLables()
+                graphData.formatAxis(fromTime, endTime)
+
+
                 if (menuChartSettings[0][OverviewMenus.CharType.ACT.ordinal])
                     graphData.addActivity(fromTime, endTime, false, 0.8)
 

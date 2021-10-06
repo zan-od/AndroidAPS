@@ -93,7 +93,8 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:weightSum="5"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            >
 
             <TextView
                 android:id="@+id/dia_tab"
@@ -169,7 +170,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:labelFor="@+id/localprofile_name"
-                    android:text="@string/profile_name"
+                    android:text="@string/profile_name_change"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
@@ -250,6 +251,7 @@
         <Button
             android:id="@+id/localprofile_profileswitch"
             style="?android:attr/buttonStyle"
+            android:background="@drawable/buttonshape"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
@@ -261,6 +263,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="@string/activate_profile"
+            android:textColor="@color/rig22Blue"
             android:drawableStart="@drawable/ic_local_activate" />
 
         <LinearLayout
@@ -272,6 +275,7 @@
             <Button
                 android:id="@+id/localprofile_reset"
                 style="?android:attr/buttonStyle"
+                android:background="@drawable/buttonshape"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -283,11 +287,13 @@
                 android:drawableStart="@drawable/ic_local_reset"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/reset" />
+                android:text="@string/reset"
+                android:textColor="@color/rig22Blue"/>
 
             <Button
                 android:id="@+id/localprofile_save"
                 style="?android:attr/buttonStyle"
+                android:background="@drawable/buttonshape"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -299,7 +305,8 @@
                 android:drawableStart="@drawable/ic_local_save"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/save" />
+                android:text="@string/save"
+                android:textColor="@color/rig22Blue"/>
         </LinearLayout>
 
     </LinearLayout>
