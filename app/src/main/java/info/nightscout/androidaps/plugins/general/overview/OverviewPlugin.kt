@@ -23,7 +23,6 @@ import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventBucke
 import info.nightscout.androidaps.plugins.iob.iobCobCalculator.events.EventIobCalculationProgress
 import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
-import info.nightscout.androidaps.utils.Translator
 import info.nightscout.androidaps.utils.resources.ResourceHelper
 import info.nightscout.androidaps.utils.rx.AapsSchedulers
 import info.nightscout.androidaps.utils.sharedPreferences.SP
@@ -45,8 +44,6 @@ class OverviewPlugin @Inject constructor(
         resourceHelper: ResourceHelper,
         private val config: Config,
         private val dateUtil: DateUtil,
-        private val translator: Translator,
-//    private val profiler: Profiler,
         private val profileFunction: ProfileFunction,
         private val iobCobCalculator: IobCobCalculator,
         private val repository: AppRepository,
@@ -93,7 +90,7 @@ class OverviewPlugin @Inject constructor(
                 }, fabricPrivacy::logException)
         disposable += rxBus
                 .toObservable(EventIobCalculationProgress::class.java)
-                .observeOn(aapsSchedulers.main)
+                .observeOn(aapsSchedulers.io)
                 .subscribe({ overviewData.calcProgress = it.progress; overviewBus.send(EventUpdateOverview("EventIobCalculationProgress", OverviewData.Property.CALC_PROGRESS)) }, fabricPrivacy::logException)
         disposable += rxBus
                 .toObservable(EventTempBasalChange::class.java)
@@ -138,16 +135,22 @@ class OverviewPlugin @Inject constructor(
                 .toObservable(EventLoopInvoked::class.java)
                 .observeOn(aapsSchedulers.io)
                 .subscribe({ overviewData.preparePredictions("EventLoopInvoked") }, fabricPrivacy::logException)
-        disposable.add(rxBus
+        disposable += rxBus
                 .toObservable(EventNewBasalProfile::class.java)
                 .observeOn(aapsSchedulers.io)
-                .subscribe({ loadProfile("EventNewBasalProfile") }, fabricPrivacy::logException))
-        disposable.add(rxBus
+                .subscribe({ loadProfile("EventNewBasalProfile") }, fabricPrivacy::logException)
+        disposable += rxBus
                 .toObservable(EventAutosensCalculationFinished::class.java)
                 .observeOn(aapsSchedulers.io)
                 .subscribe({
                     if (it.cause !is EventCustomCalculationFinished) refreshLoop("EventAutosensCalculationFinished")
-                }, fabricPrivacy::logException))
+                }, fabricPrivacy::logException)
+        disposable += rxBus
+               .toObservable(EventPumpStatusChanged::class.java)
+               .observeOn(aapsSchedulers.io)
+               .subscribe({
+                    overviewData.pumpStatus = it.getStatus(resourceHelper)
+               }, fabricPrivacy::logException)
 
         Thread { loadAll("onResume") }.start()
     }
@@ -173,6 +176,7 @@ class OverviewPlugin @Inject constructor(
 
     override fun configuration(): JSONObject =
             JSONObject()
+                    .putInt(R.string.key_units, sp, resourceHelper)
                     .putString(R.string.key_quickwizard, sp, resourceHelper)
                     .putInt(R.string.key_eatingsoon_duration, sp, resourceHelper)
                     .putDouble(R.string.key_eatingsoon_target, sp, resourceHelper)
@@ -199,6 +203,7 @@ class OverviewPlugin @Inject constructor(
 
     override fun applyConfiguration(configuration: JSONObject) {
         configuration
+                .storeInt(R.string.key_units, sp, resourceHelper)
                 .storeString(R.string.key_quickwizard, sp, resourceHelper)
                 .storeInt(R.string.key_eatingsoon_duration, sp, resourceHelper)
                 .storeDouble(R.string.key_eatingsoon_target, sp, resourceHelper)
@@ -230,11 +235,11 @@ class OverviewPlugin @Inject constructor(
         if (runningRefresh) return
         runningRefresh = true
         loadIobCobResults(from)
+        overviewBus.send(EventUpdateOverview(from, OverviewData.Property.PROFILE))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.BG))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.TIME))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.TEMPORARY_BASAL))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.EXTENDED_BOLUS))
-        overviewBus.send(EventUpdateOverview(from, OverviewData.Property.IOB_COB))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.TEMPORARY_TARGET))
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.SENSITIVITY))
         loadAsData(from)
@@ -244,6 +249,7 @@ class OverviewPlugin @Inject constructor(
         overviewData.prepareTreatmentsData(from)
         overviewData.prepareIobAutosensData(from)
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.GRAPH))
+        overviewBus.send(EventUpdateOverview(from, OverviewData.Property.IOB_COB))
         aapsLogger.debug(LTag.UI, "refreshLoop finished")
         runningRefresh = false
     }
@@ -267,9 +273,6 @@ class OverviewPlugin @Inject constructor(
     }
 
     private fun loadProfile(from: String) {
-        overviewData.profile = profileFunction.getProfile()
-        overviewData.profileName = profileFunction.getProfileName()
-        overviewData.profileNameWithRemainingTime = profileFunction.getProfileNameWithRemainingTime()
         overviewBus.send(EventUpdateOverview(from, OverviewData.Property.PROFILE))
     }
 
@@ -305,7 +308,7 @@ class OverviewPlugin @Inject constructor(
     private fun loadIobCobResults(from: String) {
         overviewData.bolusIob = iobCobCalculator.calculateIobFromBolus().round()
         overviewData.basalIob = iobCobCalculator.calculateIobFromTempBasalsIncludingConvertedExtended().round()
-        overviewData.cobInfo = iobCobCalculator.getCobInfo(false, "Overview COB")
+        overviewData.cobInfo = iobCobCalculator.getCobInfo(true, "Overview COB")
         val lastCarbs = repository.getLastCarbsRecordWrapped().blockingGet()
         overviewData.lastCarbsTime = if (lastCarbs is ValueWrapper.Existing) lastCarbs.value.timestamp else 0L
 

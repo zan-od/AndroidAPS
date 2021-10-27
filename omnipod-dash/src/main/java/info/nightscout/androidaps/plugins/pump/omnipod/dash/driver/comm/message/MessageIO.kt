@@ -29,7 +29,7 @@ class MessageIO(
     private val dataBleIO: DataBleIO,
 ) {
 
-    val receivedOutOfOrder = LinkedHashMap<Byte, ByteArray>()
+    private val receivedOutOfOrder = LinkedHashMap<Byte, ByteArray>()
     var maxMessageReadTries = 3
     var messageReadTries = 0
 
@@ -177,7 +177,7 @@ class MessageIO(
             }
 
             BleCommandSuccess -> {
-                if (index == packets.size-1)
+                if (index == packets.size - 1)
                     MessageSendSuccess
                 else
                     MessageSendErrorSending("Received SUCCESS before sending all the data. $index")

@@ -13,6 +13,7 @@ import dagger.android.support.DaggerFragment
 import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.activities.ErrorHelperActivity
 import info.nightscout.androidaps.events.EventPreferenceChange
+import info.nightscout.androidaps.events.EventPumpStatusChanged
 import info.nightscout.androidaps.interfaces.CommandQueueProvider
 import info.nightscout.androidaps.interfaces.PumpSync
 import info.nightscout.androidaps.plugins.bus.RxBusWrapper
@@ -30,6 +31,8 @@ import info.nightscout.androidaps.plugins.pump.omnipod.dash.R
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.databinding.OmnipodDashOverviewBinding
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.databinding.OmnipodDashOverviewBluetoothStatusBinding
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.driver.pod.definition.ActivationProgress
+import info.nightscout.androidaps.plugins.pump.omnipod.dash.driver.pod.definition.AlertType
+import info.nightscout.androidaps.plugins.pump.omnipod.dash.driver.pod.definition.PodConstants
 import info.nightscout.androidaps.plugins.pump.omnipod.dash.driver.pod.state.OmnipodDashPodStateManager
 import info.nightscout.androidaps.queue.Callback
 import info.nightscout.androidaps.queue.events.EventQueueChanged
@@ -66,7 +69,6 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
     @Inject lateinit var buildHelper: BuildHelper
 
     companion object {
-
         private const val REFRESH_INTERVAL_MILLIS = 15 * 1000L // 15 seconds
         private const val PLACEHOLDER = "-"
         private const val MAX_TIME_DEVIATION_MINUTES = 10L
@@ -92,7 +94,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
     // These properties are only valid between onCreateView and
     // onDestroyView.
     val binding get() = _binding!!
-    val bluetoothStatusBinding get() = _bluetoothStatusBinding!!
+    private val bluetoothStatusBinding get() = _bluetoothStatusBinding!!
     private val podInfoBinding get() = _podInfoBinding!!
     private val buttonBinding get() = _buttonBinding!!
 
@@ -171,6 +173,8 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
             bluetoothStatusBinding.deliveryStatus.visibility = View.VISIBLE
             bluetoothStatusBinding.connectionQuality.visibility = View.VISIBLE
         }
+        podInfoBinding.omnipodCommonOverviewLotNumberLayout.visibility = View.GONE
+        podInfoBinding.omnipodCommonOverviewPodUniqueIdLayout.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -205,6 +209,16 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
                 },
                 fabricPrivacy::logException
             )
+
+        disposables += rxBus
+            .toObservable(EventPumpStatusChanged::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe(
+                {
+                    updateBluetoothConnectionStatus(it)
+                },
+                fabricPrivacy::logException
+            )
         updateUi()
     }
 
@@ -230,18 +244,14 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
         updateQueueStatus()
     }
 
+    private fun updateBluetoothConnectionStatus(event: EventPumpStatusChanged) {
+        var status = event.getStatus(resourceHelper)
+        bluetoothStatusBinding.omnipodDashBluetoothStatus.text = status
+    }
+
     private fun updateBluetoothStatus() {
         bluetoothStatusBinding.omnipodDashBluetoothAddress.text = podStateManager.bluetoothAddress
             ?: PLACEHOLDER
-        bluetoothStatusBinding.omnipodDashBluetoothStatus.text =
-            when (podStateManager.bluetoothConnectionState) {
-                OmnipodDashPodStateManager.BluetoothConnectionState.CONNECTED ->
-                    "{fa-bluetooth}"
-                OmnipodDashPodStateManager.BluetoothConnectionState.DISCONNECTED ->
-                    "{fa-bluetooth-b}"
-                OmnipodDashPodStateManager.BluetoothConnectionState.CONNECTING ->
-                    "{fa-bluetooth-b spin}"
-            }
 
         val connectionSuccessPercentage = podStateManager.connectionSuccessRatio() * 100
         val successPercentageString = String.format("%.2f %%", connectionSuccessPercentage)
@@ -325,10 +335,14 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
             }
                 ?: PLACEHOLDER
             podInfoBinding.podExpiryDate.setTextColor(
-                if (expiresAt != null && ZonedDateTime.now().isAfter(expiresAt))
-                    Color.RED
-                else
-                    Color.WHITE
+                when {
+                    expiresAt != null && ZonedDateTime.now().isAfter(expiresAt) ->
+                        Color.RED
+                    expiresAt != null && ZonedDateTime.now().isAfter(expiresAt.minusHours(4)) ->
+                        Color.YELLOW
+                    else ->
+                        Color.WHITE
+                }
             )
 
             podStateManager.alarmType?.let {
@@ -358,7 +372,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
                 if (podStateManager.isActivationCompleted && podStateManager.pulsesDelivered != null) {
                     resourceHelper.gs(
                         R.string.omnipod_common_overview_total_delivered_value,
-                        podStateManager.pulsesDelivered!! * 0.05
+                        (podStateManager.pulsesDelivered!! * PodConstants.POD_PULSE_BOLUS_UNITS)
                     )
                 } else {
                     PLACEHOLDER
@@ -373,11 +387,11 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
                 // TODO
                 // val lowReservoirThreshold = (omnipodAlertUtil.lowReservoirAlertUnits
                 //    ?: OmnipodConstants.DEFAULT_MAX_RESERVOIR_ALERT_THRESHOLD).toDouble()
-                val lowReservoirThreshold: Short = 20
+                val lowReservoirThreshold: Short = PodConstants.DEFAULT_MAX_RESERVOIR_ALERT_THRESHOLD
 
                 podInfoBinding.reservoir.text = resourceHelper.gs(
                     R.string.omnipod_common_overview_reservoir_value,
-                    (podStateManager.pulsesRemaining!! * 0.05)
+                    (podStateManager.pulsesRemaining!! * PodConstants.POD_PULSE_BOLUS_UNITS)
                 )
                 podInfoBinding.reservoir.setTextColor(
                     if (podStateManager.pulsesRemaining!! < lowReservoirThreshold) {
@@ -389,7 +403,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
             }
 
             podInfoBinding.podActiveAlerts.text = podStateManager.activeAlerts?.let { it ->
-                it.joinToString(",") { it.toString() }
+                it.joinToString(System.lineSeparator()) { t -> translatedActiveAlert(t) }
             } ?: PLACEHOLDER
         }
 
@@ -400,6 +414,24 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
             podInfoBinding.errors.text = StringUtils.join(errors, System.lineSeparator())
             podInfoBinding.errors.setTextColor(Color.RED)
         }
+    }
+
+    private fun translatedActiveAlert(alert: AlertType): String {
+        val id = when (alert) {
+            AlertType.LOW_RESERVOIR ->
+                R.string.omnipod_common_alert_low_reservoir
+            AlertType.EXPIRATION ->
+                R.string.omnipod_common_alert_expiration_advisory
+            AlertType.EXPIRATION_IMMINENT ->
+                R.string.omnipod_common_alert_expiration
+            AlertType.USER_SET_EXPIRATION ->
+                R.string.omnipod_common_alert_expiration_advisory
+            AlertType.AUTO_OFF ->
+                R.string.omnipod_common_alert_shutdown_imminent
+            else ->
+                R.string.omnipod_common_alert_unknown_alert
+        }
+        return resourceHelper.gs(id)
     }
 
     private fun updateLastConnection() {
@@ -513,7 +545,7 @@ class OmnipodDashOverviewFragment : DaggerFragment() {
             val rate = tempBasal.rate
             val duration = tempBasal.durationInMinutes
 
-            val minutesRunning = 0 // TODO
+            val minutesRunning = Duration.ofMillis(System.currentTimeMillis() - startTime).toMinutes()
 
             podInfoBinding.tempBasal.text = resourceHelper.gs(
                 R.string.omnipod_common_overview_temp_basal_value,
