@@ -4,16 +4,18 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import dagger.android.DaggerService;
 import dagger.android.HasAndroidInjector;
-import info.nightscout.androidaps.interfaces.ActivePluginProvider;
+import info.nightscout.androidaps.interfaces.ActivePlugin;
 import info.nightscout.androidaps.logging.AAPSLogger;
 import info.nightscout.androidaps.logging.LTag;
-import info.nightscout.androidaps.plugins.bus.RxBusWrapper;
+import info.nightscout.androidaps.plugins.bus.RxBus;
 import info.nightscout.androidaps.plugins.pump.common.defs.PumpDeviceState;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.RileyLinkCommunicationManager;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.RileyLinkConst;
@@ -24,8 +26,6 @@ import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.defs.Rile
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.defs.RileyLinkError;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.defs.RileyLinkServiceState;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.defs.RileyLinkTargetDevice;
-import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.service.data.ServiceResult;
-import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.service.data.ServiceTransport;
 import info.nightscout.androidaps.utils.resources.ResourceHelper;
 import info.nightscout.androidaps.utils.sharedPreferences.SP;
 
@@ -38,12 +38,12 @@ public abstract class RileyLinkService extends DaggerService {
     @Inject protected AAPSLogger aapsLogger;
     @Inject protected SP sp;
     @Inject protected Context context;
-    @Inject protected RxBusWrapper rxBus;
+    @Inject protected RxBus rxBus;
     @Inject protected RileyLinkUtil rileyLinkUtil;
     @Inject protected HasAndroidInjector injector;
-    @Inject protected ResourceHelper resourceHelper;
+    @Inject protected ResourceHelper rh;
     @Inject protected RileyLinkServiceData rileyLinkServiceData;
-    @Inject protected ActivePluginProvider activePlugin;
+    @Inject protected ActivePlugin activePlugin;
     @Inject protected RileyLinkBLE rileyLinkBLE; // android-bluetooth management
     @Inject protected RFSpy rfspy; // interface for RL xxx Mhz radio.
 
@@ -114,6 +114,10 @@ public abstract class RileyLinkService extends DaggerService {
 
     public abstract RileyLinkCommunicationManager getDeviceCommunicationManager();
 
+    public RileyLinkServiceState getRileyLinkServiceState() {
+        return rileyLinkServiceData == null ? null : rileyLinkServiceData.rileyLinkServiceState;
+    }
+
     // Here is where the wake-lock begins:
     // We've received a service startCommand, we grab the lock.
     @Override
@@ -152,19 +156,19 @@ public abstract class RileyLinkService extends DaggerService {
         rileyLinkServiceData.setRileyLinkServiceState(RileyLinkServiceState.RileyLinkInitializing);
 
         if (rileyLinkBLE.isConnected()) {
-            if (deviceAddress.equals(rileyLinkServiceData.rileylinkAddress)) {
+            if (deviceAddress.equals(rileyLinkServiceData.rileyLinkAddress)) {
                 aapsLogger.info(LTag.PUMPBTCOMM, "No change to RL address.  Not reconnecting.");
                 return false;
             } else {
-                aapsLogger.warn(LTag.PUMPBTCOMM, "Disconnecting from old RL (" + rileyLinkServiceData.rileylinkAddress
+                aapsLogger.warn(LTag.PUMPBTCOMM, "Disconnecting from old RL (" + rileyLinkServiceData.rileyLinkAddress
                         + "), reconnecting to new: " + deviceAddress);
 
                 rileyLinkBLE.disconnect();
                 // prolly need to shut down listening thread too?
                 // SP.putString(MedtronicConst.Prefs.RileyLinkAddress, deviceAddress);
 
-                rileyLinkServiceData.rileylinkAddress = deviceAddress;
-                rileyLinkBLE.findRileyLink(rileyLinkServiceData.rileylinkAddress);
+                rileyLinkServiceData.rileyLinkAddress = deviceAddress;
+                rileyLinkBLE.findRileyLink(rileyLinkServiceData.rileyLinkAddress);
                 return true;
             }
         } else {
@@ -172,8 +176,8 @@ public abstract class RileyLinkService extends DaggerService {
 
             if (rileyLinkServiceData.getRileyLinkServiceState() == RileyLinkServiceState.NotStarted) {
                 if (!bluetoothInit()) {
-                    aapsLogger.error("RileyLink can't get activated, Bluetooth is not functioning correctly. {}",
-                            getError() != null ? getError().name() : "Unknown error (null)");
+                    aapsLogger.error("RileyLink can't get activated, Bluetooth is not functioning correctly. " +
+                            (getError() != null ? getError().name() : "Unknown error (null)"));
                     return false;
                 }
             }
@@ -203,7 +207,7 @@ public abstract class RileyLinkService extends DaggerService {
         newFrequency = getDeviceCommunicationManager().tuneForDevice();
 
         if ((newFrequency != 0.0) && (newFrequency != lastGoodFrequency)) {
-            aapsLogger.info(LTag.PUMPBTCOMM, "Saving new pump frequency of {} MHz", newFrequency);
+            aapsLogger.info(LTag.PUMPBTCOMM, String.format(Locale.ENGLISH, "Saving new pump frequency of %.3f MHz", newFrequency));
             sp.putDouble(RileyLinkConst.Prefs.LastGoodDeviceFrequency, newFrequency);
             rileyLinkServiceData.lastGoodFrequency = newFrequency;
             rileyLinkServiceData.tuneUpDone = true;
@@ -227,13 +231,14 @@ public abstract class RileyLinkService extends DaggerService {
 
         if (rileyLinkBLE.isConnected()) {
             rileyLinkBLE.disconnect();
-            rileyLinkServiceData.rileylinkAddress = null;
+            rileyLinkServiceData.rileyLinkAddress = null;
+            rileyLinkServiceData.rileyLinkName = null;
         }
 
         rileyLinkServiceData.setRileyLinkServiceState(RileyLinkServiceState.BluetoothReady);
     }
 
-    @NotNull public RileyLinkBLE getRileyLinkBLE() {
+    @NonNull public RileyLinkBLE getRileyLinkBLE() {
         return rileyLinkBLE;
     }
 
@@ -258,5 +263,9 @@ public abstract class RileyLinkService extends DaggerService {
             return null;
     }
 
-    public abstract boolean verifyConfiguration();
+    public boolean verifyConfiguration() {
+        return verifyConfiguration(false);
+    }
+
+    public abstract boolean verifyConfiguration(boolean forceRileyLinkAddressRenewal);
 }

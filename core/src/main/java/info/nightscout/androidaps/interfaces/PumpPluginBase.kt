@@ -9,17 +9,17 @@ abstract class PumpPluginBase(
     pluginDescription: PluginDescription,
     injector: HasAndroidInjector,
     aapsLogger: AAPSLogger,
-    resourceHelper: ResourceHelper,
+    rh: ResourceHelper,
     val commandQueue: CommandQueueProvider
-) : PluginBase(pluginDescription, aapsLogger, resourceHelper, injector) {
+) : PluginBase(pluginDescription, aapsLogger, rh, injector) {
 
     override fun onStart() {
         super.onStart()
         if (getType() == PluginType.PUMP) {
-            Thread(Runnable {
+            Thread {
                 SystemClock.sleep(3000)
                 commandQueue.readStatus("Pump driver changed.", null)
-            }).start()
+            }.start()
         }
     }
 }
