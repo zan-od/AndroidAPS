@@ -1,7 +1,7 @@
 package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 class MsgSetActivateBasalProfile(
     injector: HasAndroidInjector,
@@ -10,8 +10,8 @@ class MsgSetActivateBasalProfile(
 
     // index 0-3
     init {
-        SetCommand(0x330C)
-        AddParamByte(index)
+        setCommand(0x330C)
+        addParamByte(index)
         aapsLogger.debug(LTag.PUMPCOMM, "Activate basal profile: $index")
     }
 

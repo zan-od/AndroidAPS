@@ -1,7 +1,7 @@
 package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 class MsgSetTime(
     injector: HasAndroidInjector,
@@ -9,8 +9,8 @@ class MsgSetTime(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x330a)
-        AddParamDateTimeReversed(time)
+        setCommand(0x330a)
+        addParamDateTimeReversed(time)
         aapsLogger.debug(LTag.PUMPCOMM, "New message: time:" + dateUtil.dateAndTimeString(time))
     }
 

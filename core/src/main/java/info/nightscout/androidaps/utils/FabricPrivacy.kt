@@ -1,15 +1,19 @@
 package info.nightscout.androidaps.utils
 
-import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
+import info.nightscout.androidaps.annotations.OpenForTesting
 import info.nightscout.androidaps.core.R
-import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.logging.LTag
-import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.shared.logging.LTag
+import info.nightscout.shared.sharedPreferences.SP
+import info.nightscout.shared.weardata.EventData
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.ObjectInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +22,7 @@ import javax.inject.Singleton
  * to disable them and make calls from a potentially invalid singleton reference. This wrapper
  * emulates the methods but ignores the request if the instance is null or invalid.
  */
+@OpenForTesting
 @Singleton
 class FabricPrivacy @Inject constructor(
     private val aapsLogger: AAPSLogger,
@@ -76,13 +81,46 @@ class FabricPrivacy @Inject constructor(
         }
     }
 
+    // Crashlytics log message
+    fun logMessage(message: String) {
+        aapsLogger.info(LTag.CORE, "Crashlytics log message: $message")
+        FirebaseCrashlytics.getInstance().log(message)
+    }
+
     // Crashlytics logException
     fun logException(throwable: Throwable) {
+        aapsLogger.error("Crashlytics log exception: ", throwable)
         FirebaseCrashlytics.getInstance().recordException(throwable)
-        aapsLogger.debug(LTag.CORE, "Exception: ", throwable)
     }
 
     fun fabricEnabled(): Boolean {
         return sp.getBoolean(R.string.key_enable_fabric, true)
+    }
+
+    fun logWearException(wearException: EventData.WearException) {
+        aapsLogger.debug(LTag.WEAR, "logWearException")
+        FirebaseCrashlytics.getInstance().apply {
+            setCustomKey("wear_exception", true)
+            setCustomKey("wear_board", wearException.board)
+            setCustomKey("wear_fingerprint", wearException.fingerprint)
+            setCustomKey("wear_sdk", wearException.sdk)
+            setCustomKey("wear_model", wearException.model)
+            setCustomKey("wear_manufacturer", wearException.manufacturer)
+            setCustomKey("wear_product", wearException.product)
+        }
+        logException(byteArrayToThrowable(wearException.exception))
+    }
+
+    private fun byteArrayToThrowable(wearExceptionData: ByteArray): Throwable {
+        val bis = ByteArrayInputStream(wearExceptionData)
+        try {
+            val ois = ObjectInputStream(bis)
+            return ois.readObject() as Throwable
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: ClassNotFoundException) {
+            e.printStackTrace()
+        }
+        return IllegalArgumentException("Wear Exception could not be de-serialized")
     }
 }

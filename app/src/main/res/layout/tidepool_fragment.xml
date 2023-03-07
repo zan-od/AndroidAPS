@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tidepool_status"
+        android:id="@+id/status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginTop="32dp"
         android:text="-"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
-    <Button
-        android:id="@+id/tidepool_login"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login"
+        style="@style/GrayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Login"
+        android:text="@string/login"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tidepool_status" />
+        app:layout_constraintTop_toBottomOf="@+id/status" />
 
-    <Button
-        android:id="@+id/tidepool_uploadnow"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/uploadnow"
+        style="@style/GrayButton"
         android:layout_width="113dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
-        android:text="Upload now"
-        app:layout_constraintStart_toEndOf="@+id/tidepool_login"
-        app:layout_constraintTop_toBottomOf="@+id/tidepool_status" />
+        android:text="@string/upload_now"
+        app:layout_constraintStart_toEndOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/status" />
 
-    <Button
-        android:id="@+id/tidepool_removeall"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/removeall"
+        style="@style/GrayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:text="Remove all"
-        app:layout_constraintStart_toEndOf="@+id/tidepool_uploadnow"
-        app:layout_constraintTop_toBottomOf="@+id/tidepool_status" />
+        android:text="@string/remove_all"
+        app:layout_constraintStart_toEndOf="@+id/uploadnow"
+        app:layout_constraintTop_toBottomOf="@+id/status" />
 
-    <Button
-        android:id="@+id/tidepool_resertstart"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/resertstart"
+        style="@style/GrayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:text="Reset start"
-        app:layout_constraintStart_toEndOf="@+id/tidepool_removeall"
-        app:layout_constraintTop_toBottomOf="@+id/tidepool_status" />
+        android:text="@string/reset_start"
+        app:layout_constraintStart_toEndOf="@+id/removeall"
+        app:layout_constraintTop_toBottomOf="@+id/status" />
 
     <ScrollView
-        android:id="@+id/tidepool_logscrollview"
+        android:id="@+id/logscrollview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -61,14 +67,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tidepool_login"
+        app:layout_constraintTop_toBottomOf="@+id/login"
         app:layout_constraintVertical_bias="0.023">
 
         <TextView
-            android:id="@+id/tidepool_log"
+            android:id="@+id/log"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="-- logs --" />
+            android:text="-- logs --"
+            tools:ignore="HardcodedText" />
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@
     <string name="objectivenotstarted">Цель %1$d не начата</string>
     <string name="objectivenotfinished">Цель %1$d не завершена</string>
     <string name="objectives_0_objective">Настройка визуализации и мониторинга, анализ базала и коэффициентов</string>
-    <string name="objectives_0_gate">Убедитесь, что BG доступен в Nightscut, и данные инсулина помпы загружаются</string>
+    <string name="objectives_0_gate">Убедитесь, что значения ГК и данные по инсулину помпы передаются в Nightscout</string>
     <string name="objectives_openloop_objective">Старт незамкнутого цикла</string>
     <string name="objectives_openloop_gate">Начинайте работу в режиме незамкнутого цикла и ручной подстройки величины временного базала. Установите и применяйте временные цели и временные цели по умолчанию (напр. углеводы при нагрузке или купировании гипо)</string>
     <string name="objectives_maxbasal_objective">Глубже понимаем незакольцованную систему Open Loop, включая ее рекомендации по временным базалам</string>
@@ -17,7 +17,6 @@
     <string name="objectives_maxiob_gate">Работа несколько дней и по кр мере одну ночь без срабатывания оповещений о низкой ГК</string>
     <string name="objectives_autosens_objective">Настраиваем базал и коэффициенты с последующей активацией auto-sens</string>
     <string name="objectives_autosens_gate">1 неделя успешной дневной работы с регулярным введением углеводов</string>
-    <string name="objectives_ama_objective">Активация таких доп функций для дневного времени как расширенный калькулятор болюса advanced meal assist</string>
     <string name="objectives_smb_objective">Активация таких доп функций для дневного времени как супер микро болюс SMB</string>
     <string name="objectives_auto_objective">Включение автоматизации</string>
     <string name="objectives_smb_gate">Прочтите wiki и увеличьте maxIOB чтобы супер микро болюс SMB заработал как положено! Хорошее начало – maxIOB = средний болюс на еду + троекратный максимальный суточный базал</string>

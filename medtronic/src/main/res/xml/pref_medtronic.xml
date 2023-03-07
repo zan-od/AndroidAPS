@@ -4,10 +4,11 @@
     xmlns:validate="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:key="@string/key_medtronic_name_settings"
         android:title="@string/medtronic_name"
         app:initialExpandedChildrenCount="0">
 
-        <EditTextPreference
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="000000"
             android:key="@string/key_medtronic_serial"
             android:selectAllOnFocus="true"
@@ -17,14 +18,12 @@
             validate:testErrorString="@string/error_mustbe6digitnumber"
             validate:testType="regexp" />
 
-
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/medtronicPumpTypeArray"
             android:entryValues="@array/medtronicPumpTypeArray"
             android:key="@string/key_medtronic_pump_type"
             android:title="@string/medtronic_pump_type" />
-
 
         <ListPreference
             android:defaultValue="@string/key_medtronic_pump_frequency_us_ca"
@@ -34,7 +33,7 @@
             android:selectable="true"
             android:title="@string/medtronic_pump_frequency" />
 
-        <EditTextPreference
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="35"
             android:digits="0123456789."
             android:inputType="number"
@@ -46,7 +45,7 @@
             validate:minNumber="1"
             validate:testType="numericRange" />
 
-        <EditTextPreference
+        <info.nightscout.androidaps.utils.textValidator.ValidatingEditTextPreference
             android:defaultValue="25"
             android:digits="0123456789."
             android:inputType="number"
@@ -94,10 +93,14 @@
             android:enabled="true"
             android:key="@string/key_rileylink_mac_address"
             android:summary=""
-            android:title="RileyLink Configuration">
+            android:title="@string/rileylink_configuration">
             <intent android:action="info.nightscout.androidaps.plugins.PumpCommon.dialog.RileyLinkBLEConfigActivity" />
         </Preference>
-
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_orange_use_scanning"
+            android:summary="@string/orange_use_scanning_level_summary"
+            android:title="@string/orange_use_scanning_level" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_riley_link_show_battery_level"

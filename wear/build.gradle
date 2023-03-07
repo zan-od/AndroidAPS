@@ -1,6 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" } // jacoco 0.2
     }
 
@@ -10,17 +11,15 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
-//apply plugin: 'jacoco-android'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-allopen'
 apply plugin: 'com.hiya.jacoco-android'
 
-jacoco {
-    toolVersion = "0.8.3"
-}
+apply from: "${project.rootDir}/core/test_dependencies.gradle"
+apply from: "${project.rootDir}/core/android_dependencies.gradle"
+apply from: "${project.rootDir}/core/jacoco_global.gradle"
 
-ext {
-    wearableVersion = "2.4.0"
-    playServicesWearable = "17.0.0"
-}
 
 def generateGitBuild = { ->
 
@@ -44,36 +43,22 @@ def generateGitBuild = { ->
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
 
     defaultConfig {
-        applicationId "info.nightscout.androidaps"
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 2
         versionName "1.0.3"
         buildConfigField "String", "BUILDVERSION", generateGitBuild()
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        firebaseDisable {
-        }
+
+    buildFeatures {
+        viewBinding true
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    lintOptions {
-        abortOnError false
-    }
-
+    flavorDimensions "standard"
     productFlavors {
-        flavorDimensions "standard"
         full {
             applicationId "info.nightscout.androidaps"
             dimension "standard"
@@ -95,56 +80,53 @@ android {
             versionName version + "-nsclient"
         }
     }
+    namespace 'info.nightscout.androidaps'
 }
 
 allprojects {
     repositories {
-        jcenter()
-        flatDir {
-            dirs 'libs'
-        }
+        google()
+        mavenCentral()
     }
 }
 
 
 dependencies {
+    implementation project(':shared')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    //implementation files("libs/hellocharts-library-1.5.5.jar")
-    //compile "com.ustwo.android:clockwise-wearable:1.0.2"
 
-    implementation "androidx.appcompat:appcompat:$appcompat_verison"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.core:core-ktx:$core_version"
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation "androidx.preference:preference-ktx:$preferencektx_version"
+    implementation 'androidx.wear:wear:1.2.0'
+    implementation "androidx.wear.tiles:tiles:1.0.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    compileOnly "com.google.android.wearable:wearable:${wearableVersion}"
-    implementation "com.google.android.support:wearable:${wearableVersion}"
-    implementation "com.google.android.gms:play-services-wearable:${playServicesWearable}"
-    implementation(name: 'ustwo-clockwise-debug', ext: 'aar')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.percentlayout:percentlayout:1.0.0'
-    implementation 'androidx.wear:wear:1.1.0'
-    implementation('me.denley.wearpreferenceactivity:wearpreferenceactivity:0.5.0')
+    compileOnly "com.google.android.wearable:wearable:$wearable_version"
+    implementation "com.google.android.support:wearable:$wearable_version"
+    implementation "com.google.android.gms:play-services-wearable:$play_services_wearable_version"
+    implementation(files('libs/ustwo-clockwise-debug.aar'))
+    implementation(files('libs/wearpreferenceactivity-0.5.0.aar'))
     implementation('com.github.lecho:hellocharts-library:1.5.8@aar')
 
-    testImplementation "junit:junit:$junit_version"
-    testImplementation 'org.json:json:20200518'
-    testImplementation("org.mockito:mockito-core:${mockitoVersion}") {
-        exclude group: 'net.bytebuddy', module: 'byte-buddy'
-        exclude group: 'net.bytebuddy', module: 'byte-buddy-android'
-        exclude group: 'net.bytebuddy', module: 'byte-buddy-agent'
-    }
-    // to fix org.mockito:mockito-core dependency issues, fixed in mockito 3+
-    testImplementation 'net.bytebuddy:byte-buddy:1.10.17'
-    testImplementation 'net.bytebuddy:byte-buddy-android:1.10.17'
-    testImplementation 'net.bytebuddy:byte-buddy-agent:1.10.17'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
-    testImplementation "org.powermock:powermock-module-junit4-rule-agent:${powermockVersion}"
-    testImplementation "org.powermock:powermock-module-junit4-rule:${powermockVersion}"
-    testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
-    testImplementation 'joda-time:joda-time:2.10.6'
-    testImplementation('com.google.truth:truth:1.0.1') {
-        exclude group: "com.google.guava", module: "guava"
-    }
-    testImplementation "org.skyscreamer:jsonassert:1.5.0"
-    testImplementation "org.hamcrest:hamcrest-all:1.3"
+    // for old fashioned support-app version
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+}
+repositories {
+    mavenCentral()
 }

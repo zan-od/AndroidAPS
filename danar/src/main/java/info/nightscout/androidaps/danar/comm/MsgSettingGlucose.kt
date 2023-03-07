@@ -2,7 +2,7 @@ package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.dana.DanaPump
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 /**
  * Created by mike on 05.07.2016.
@@ -12,7 +12,7 @@ class MsgSettingGlucose(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x3209)
+        setCommand(0x3209)
         aapsLogger.debug(LTag.PUMPCOMM, "New message")
     }
 

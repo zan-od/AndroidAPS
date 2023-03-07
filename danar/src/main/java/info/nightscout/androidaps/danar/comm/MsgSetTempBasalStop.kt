@@ -1,14 +1,14 @@
 package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 class MsgSetTempBasalStop(
     injector: HasAndroidInjector
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x0403)
+        setCommand(0x0403)
         aapsLogger.debug(LTag.PUMPBTCOMM, "Temp basal stop")
     }
 

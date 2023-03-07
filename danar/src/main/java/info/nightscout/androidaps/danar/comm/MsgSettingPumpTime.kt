@@ -1,7 +1,7 @@
 package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 import org.joda.time.DateTime
 import java.util.*
 
@@ -10,7 +10,7 @@ class MsgSettingPumpTime(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x320A)
+        setCommand(0x320A)
         aapsLogger.debug(LTag.PUMPCOMM, "New message")
     }
 

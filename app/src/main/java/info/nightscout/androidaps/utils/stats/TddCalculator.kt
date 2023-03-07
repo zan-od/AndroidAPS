@@ -1,121 +1,193 @@
 package info.nightscout.androidaps.utils.stats
 
-import android.text.Spanned
+import android.content.Context
+import android.graphics.Typeface
 import android.util.LongSparseArray
-import dagger.android.HasAndroidInjector
-import info.nightscout.androidaps.MainApp
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import info.nightscout.androidaps.R
-import info.nightscout.androidaps.db.TDD
-import info.nightscout.androidaps.interfaces.ActivePluginProvider
+import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
+import info.nightscout.androidaps.database.embedments.InterfaceIDs
+import info.nightscout.androidaps.database.entities.Bolus
+import info.nightscout.androidaps.database.entities.TotalDailyDose
+import info.nightscout.androidaps.extensions.convertedToAbsolute
+import info.nightscout.androidaps.extensions.toTableRow
+import info.nightscout.androidaps.extensions.toTableRowHeader
+import info.nightscout.androidaps.interfaces.ActivePlugin
+import info.nightscout.androidaps.interfaces.IobCobCalculator
 import info.nightscout.androidaps.interfaces.ProfileFunction
-import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.logging.LTag
-import info.nightscout.androidaps.plugins.bus.RxBusWrapper
-import info.nightscout.androidaps.plugins.general.nsclient.NSUpload
-import info.nightscout.androidaps.plugins.general.nsclient.UploadQueue
-import info.nightscout.androidaps.plugins.treatments.TreatmentService
-import info.nightscout.androidaps.plugins.treatments.TreatmentsPlugin
+import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.utils.DateUtil
-import info.nightscout.androidaps.utils.FabricPrivacy
-import info.nightscout.androidaps.utils.HtmlHelper
 import info.nightscout.androidaps.utils.MidnightTime
 import info.nightscout.androidaps.utils.T
-import info.nightscout.androidaps.utils.resources.ResourceHelper
-import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.shared.logging.LTag
 import javax.inject.Inject
 
 class TddCalculator @Inject constructor(
-    injector: HasAndroidInjector,
-    aapsLogger: AAPSLogger,
-    rxBus: RxBusWrapper,
-    resourceHelper: ResourceHelper,
-    val mainApp: MainApp,
-    val sp: SP,
-    val activePlugin: ActivePluginProvider,
-    val profileFunction: ProfileFunction,
-    fabricPrivacy: FabricPrivacy,
-    nsUpload: NSUpload,
+    private val aapsLogger: AAPSLogger,
+    private val rh: ResourceHelper,
+    private val activePlugin: ActivePlugin,
+    private val profileFunction: ProfileFunction,
     private val dateUtil: DateUtil,
-    uploadQueue: UploadQueue
-) : TreatmentsPlugin(injector, aapsLogger, rxBus, resourceHelper, mainApp, sp, profileFunction, activePlugin, nsUpload, fabricPrivacy, dateUtil, uploadQueue) {
+    private val iobCobCalculator: IobCobCalculator,
+    private val repository: AppRepository
+) {
 
-    init {
-        service = TreatmentService(injector) // plugin is not started
-    }
+    fun calculate(days: Long): LongSparseArray<TotalDailyDose> {
+        var startTime = MidnightTime.calc(dateUtil.now() - T.days(days).msecs())
+        val endTime = MidnightTime.calc(dateUtil.now())
 
-    fun calculate(days: Long): LongSparseArray<TDD> {
-        val range = T.days(days + 1).msecs()
-        val startTime = MidnightTime.calc(DateUtil.now() - T.days(days).msecs())
-        val endTime = MidnightTime.calc(DateUtil.now())
-        initializeData(range)
-
-        val result = LongSparseArray<TDD>()
-        for (t in treatmentsFromHistory) {
-            if (!t.isValid) continue
-            if (t.date < startTime || t.date > endTime) continue
-            val midnight = MidnightTime.calc(t.date)
-            val tdd = result[midnight] ?: TDD(midnight, 0.0, 0.0, 0.0)
-            tdd.bolus += t.insulin
-            tdd.carbs += t.carbs
-            result.put(midnight, tdd)
+        val result = LongSparseArray<TotalDailyDose>()
+        // Try to load cached values
+        while (startTime < endTime) {
+            val tdd = repository.getCalculatedTotalDailyDose(startTime).blockingGet()
+            if (tdd is ValueWrapper.Existing) result.put(startTime, tdd.value)
+            else break
+            startTime += T.hours(24).msecs()
         }
 
-        for (t in startTime until endTime step T.mins(5).msecs()) {
-            val midnight = MidnightTime.calc(t)
-            val tdd = result[midnight] ?: TDD(midnight, 0.0, 0.0, 0.0)
-            val tbr = getTempBasalFromHistory(t)
-            val profile = profileFunction.getProfile(t, this) ?: continue
-            val absoluteRate = tbr?.tempBasalConvertedToAbsolute(t, profile) ?: profile.getBasal(t)
-            tdd.basal += absoluteRate / 60.0 * 5.0
-
-            if (!activePlugin.activePump.isFakingTempsByExtendedBoluses) {
-                // they are not included in TBRs
-                val eb = getExtendedBolusFromHistory(t)
-                val absoluteEbRate = eb?.absoluteRate() ?: 0.0
-                tdd.bolus += absoluteEbRate / 60.0 * 5.0
+        if (endTime > startTime) {
+            repository.getBolusesDataFromTimeToTime(startTime, endTime, true).blockingGet()
+                .filter { it.type != Bolus.Type.PRIMING }
+                .forEach { t ->
+                    val midnight = MidnightTime.calc(t.timestamp)
+                    val tdd = result[midnight] ?: TotalDailyDose(timestamp = midnight)
+                    tdd.bolusAmount += t.amount
+                    result.put(midnight, tdd)
+                }
+            repository.getCarbsDataFromTimeToTimeExpanded(startTime, endTime, true).blockingGet().forEach { t ->
+                val midnight = MidnightTime.calc(t.timestamp)
+                val tdd = result[midnight] ?: TotalDailyDose(timestamp = midnight)
+                tdd.carbs += t.amount
+                result.put(midnight, tdd)
             }
-            result.put(midnight, tdd)
+
+            val calculationStep = T.mins(5).msecs()
+            val tempBasals = iobCobCalculator.getTempBasalIncludingConvertedExtendedForRange(startTime, endTime, calculationStep)
+            for (t in startTime until endTime step calculationStep) {
+                val midnight = MidnightTime.calc(t)
+                val tdd = result[midnight] ?: TotalDailyDose(timestamp = midnight)
+                val tbr = tempBasals[t]
+                val profile = profileFunction.getProfile(t) ?: continue
+                val absoluteRate = tbr?.convertedToAbsolute(t, profile) ?: profile.getBasal(t)
+                tdd.basalAmount += absoluteRate / T.mins(60).msecs().toDouble() * calculationStep.toDouble()
+
+                if (!activePlugin.activePump.isFakingTempsByExtendedBoluses) {
+                    // they are not included in TBRs
+                    val eb = iobCobCalculator.getExtendedBolus(t)
+                    val absoluteEbRate = eb?.rate ?: 0.0
+                    tdd.bolusAmount += absoluteEbRate / T.mins(60).msecs().toDouble() * calculationStep.toDouble()
+                }
+                result.put(midnight, tdd)
+            }
         }
         for (i in 0 until result.size()) {
             val tdd = result.valueAt(i)
-            tdd.total = tdd.bolus + tdd.basal
+            tdd.totalAmount = tdd.bolusAmount + tdd.basalAmount
+            if (tdd.interfaceIDs.pumpType != InterfaceIDs.PumpType.CACHE) {
+                tdd.interfaceIDs.pumpType = InterfaceIDs.PumpType.CACHE
+                aapsLogger.debug(LTag.CORE, "Storing TDD $tdd")
+                repository.createTotalDailyDose(tdd)
+            }
         }
-        aapsLogger.debug(LTag.CORE, result.toString())
         return result
     }
 
-    private fun averageTDD(tdds: LongSparseArray<TDD>): TDD {
-        val totalTdd = TDD()
+    fun calculateToday(): TotalDailyDose {
+        var startTime = MidnightTime.calc(dateUtil.now())
+        val endTime = dateUtil.now()
+        return calculate(startTime, endTime)
+    }
+
+    fun calculateDaily(startHours: Long, endHours: Long): TotalDailyDose {
+        val startTime = dateUtil.now() + T.hours(hour = startHours).msecs()
+        val endTime = dateUtil.now() + T.hours(hour = endHours).msecs()
+        return calculate(startTime, endTime)
+    }
+
+    fun calculate(startTime: Long, endTime: Long): TotalDailyDose {
+        val tdd = TotalDailyDose(timestamp = startTime)
+        repository.getBolusesDataFromTimeToTime(startTime, endTime, true).blockingGet()
+            .filter { it.type != Bolus.Type.PRIMING }
+            .forEach { t ->
+                tdd.bolusAmount += t.amount
+            }
+        repository.getCarbsDataFromTimeToTimeExpanded(startTime, endTime, true).blockingGet().forEach { t ->
+            tdd.carbs += t.amount
+        }
+        val calculationStep = T.mins(5).msecs()
+        for (t in startTime until endTime step calculationStep) {
+            val tbr = iobCobCalculator.getTempBasalIncludingConvertedExtended(t)
+            val profile = profileFunction.getProfile(t) ?: continue
+            val absoluteRate = tbr?.convertedToAbsolute(t, profile) ?: profile.getBasal(t)
+            tdd.basalAmount += absoluteRate / 60.0 * 5.0
+
+            if (!activePlugin.activePump.isFakingTempsByExtendedBoluses) {
+                // they are not included in TBRs
+                val eb = iobCobCalculator.getExtendedBolus(t)
+                val absoluteEbRate = eb?.rate ?: 0.0
+                tdd.bolusAmount += absoluteEbRate / 60.0 * 5.0
+            }
+        }
+        tdd.totalAmount = tdd.bolusAmount + tdd.basalAmount
+        aapsLogger.debug(LTag.CORE, tdd.toString())
+        return tdd
+    }
+
+    fun averageTDD(tdds: LongSparseArray<TotalDailyDose>): TotalDailyDose? {
+        val totalTdd = TotalDailyDose(timestamp = dateUtil.now())
+        if (tdds.size() == 0) return null
         for (i in 0 until tdds.size()) {
             val tdd = tdds.valueAt(i)
-            totalTdd.basal += tdd.basal
-            totalTdd.bolus += tdd.bolus
-            totalTdd.total += tdd.total
+            totalTdd.basalAmount += tdd.basalAmount
+            totalTdd.bolusAmount += tdd.bolusAmount
+            totalTdd.totalAmount += tdd.totalAmount
             totalTdd.carbs += tdd.carbs
         }
-        totalTdd.basal /= tdds.size().toDouble()
-        totalTdd.bolus /= tdds.size().toDouble()
-        totalTdd.total /= tdds.size().toDouble()
+        totalTdd.basalAmount /= tdds.size().toDouble()
+        totalTdd.bolusAmount /= tdds.size().toDouble()
+        totalTdd.totalAmount /= tdds.size().toDouble()
         totalTdd.carbs /= tdds.size().toDouble()
         return totalTdd
     }
 
-    fun stats(): Spanned {
+    fun stats(context: Context): TableLayout {
         val tdds = calculate(7)
         val averageTdd = averageTDD(tdds)
-        return HtmlHelper.fromHtml(
-            "<b>" + resourceHelper.gs(R.string.tdd) + ":</b><br>" +
-                toText(tdds, true) +
-                "<b>" + resourceHelper.gs(R.string.average) + ":</b><br>" +
-                averageTdd.toText(resourceHelper, tdds.size(), true)
-        )
-    }
-
-    private fun toText(tdds: LongSparseArray<TDD>, includeCarbs: Boolean): String {
-        var t = ""
-        for (i in 0 until tdds.size()) {
-            t += "${tdds.valueAt(i).toText(resourceHelper, dateUtil, includeCarbs)}<br>"
+        val todayTdd = calculateToday()
+        val lp = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
+        return TableLayout(context).also { layout ->
+            layout.layoutParams = TableLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+            layout.addView(TextView(context).apply {
+                text = rh.gs(R.string.tdd)
+                setTypeface(typeface, Typeface.BOLD)
+                gravity = Gravity.CENTER_HORIZONTAL
+                setTextAppearance(android.R.style.TextAppearance_Material_Medium)
+            })
+            layout.addView(TotalDailyDose.toTableRowHeader(context, rh, includeCarbs = true))
+            for (i in 0 until tdds.size()) layout.addView(tdds.valueAt(i).toTableRow(context, rh, dateUtil, includeCarbs = true))
+            averageTdd?.let { averageTdd ->
+                layout.addView(TextView(context).apply {
+                    layoutParams = lp
+                    text = rh.gs(R.string.average)
+                    setTypeface(typeface, Typeface.BOLD)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    setTextAppearance(android.R.style.TextAppearance_Material_Medium)
+                })
+                layout.addView(averageTdd.toTableRow(context, rh, tdds.size(), includeCarbs = true))
+            }
+            layout.addView(TextView(context).apply {
+                text = rh.gs(R.string.today)
+                setTypeface(typeface, Typeface.BOLD)
+                gravity = Gravity.CENTER_HORIZONTAL
+                setTextAppearance(android.R.style.TextAppearance_Material_Medium)
+            })
+            layout.addView(todayTdd.toTableRow(context, rh, dateUtil, includeCarbs = true))
         }
-        return t
     }
 }

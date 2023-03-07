@@ -1,8 +1,8 @@
 package info.nightscout.androidaps.events
 
-import info.nightscout.androidaps.utils.resources.ResourceHelper
+import info.nightscout.androidaps.interfaces.ResourceHelper
 
 // pass string to startup wizard
 abstract class EventStatus : Event() {
-    abstract fun getStatus(resourceHelper: ResourceHelper) : String
+    abstract fun getStatus(rh: ResourceHelper) : String
 }

@@ -8,7 +8,7 @@
     <string name="dia_meaningisequaltodiapump">Если вы удовлетворены значением DIA в помпе до AndroidAPS, то при запуске цикла изменять это значение не требуется.</string>
     <string name="dia_valuemustbedetermined">Следует самостоятельно определить DIA подходящее для вас.</string>
     <string name="hypott_label">Временная цель Гипо </string>
-    <string name="hypott_whenhypott">Какова основная причина установки временной цели гипо?</string>
+    <string name="hypott_whenhypott">Какова основная причина для установки временной цели гипо?</string>
     <string name="hypott_wrongbasal">Для коррекции гипо, вызванных неверными настройками базальной скорости.</string>
     <string name="hypott_preventoversmb">Чтобы не допустить чрезмерной коррекции ГК, вызванной быстрыми углеводами принятыми для устранения гипо.</string>
     <string name="hypott_exercise">Чтобы исправить гипо вызванное нагрузкой.</string>
@@ -41,14 +41,14 @@
     <string name="noisycgm_label">Зашумленные данные мониторинга</string>
     <string name="noisycgm_whattodo">Что следует делать, если данные мониторинга зашумлены?</string>
     <string name="noisycgm_nothing">Ничего не делайте - AndroidAPS сам справится.</string>
-    <string name="noisycgm_pause">Отключите замкнутый цикл, чтоб избежать неверной дозировки.</string>
+    <string name="noisycgm_pause">Отключить замкнутый цикл, чтобы избежать возможной передозировки или уменьшения дозы.</string>
     <string name="noisycgm_replacesensor">Заменить постоянно шумящий или неточный сенсор.</string>
     <string name="noisycgm_checksmoothing">Убедитесь, что приложение мониторинга сглаживает данные ГК.</string>
     <string name="noisycgm_hint1">https://androidaps.readthedocs.io/en/latest/EN/Usage/Smoothing-Blood-Glucose-Data-in-xDrip.html#smoothing-blood-glucose-data</string>
     <string name="exerciseprofile_label">Нагрузка и Профили</string>
     <string name="exerciseprofile_whattodo">Как использовать профили, чтоб помочь системе справиться с аэробными упражнениями?</string>
     <string name="exerciseprofile_switchprofilebelow100">Задать профиль ниже 100%.</string>
-    <string name="exerciseprofile_switchprofileabove100">Задать профиль выше 100%.</string>
+    <string name="exerciseprofile_switchprofileabove100">Переключить на профиль выше 100%.</string>
     <string name="exerciseprofile_leaveat100">Оставить профиль на 100%.</string>
     <string name="exerciseprofile_suspendloop">Приостановить цикл.</string>
     <string name="exerciseprofile_hint1">https://androidaps.readthedocs.io/en/latest/EN/Usage/temptarget.html#activity-temp-target</string>
@@ -104,13 +104,11 @@
     <string name="troubleshooting_wheretoask">Где искать помощь с AndroidAPS?</string>
     <string name="troubleshooting_fb">Вы можете попросить совета в группе AndroidAPS Users Facebook.</string>
     <string name="troubleshooting_wiki">Вам следует прочитать (и перечитать) документацию AndroidAPS.</string>
-    <string name="troubleshooting_gitter">Можно консультироваться и пересылать логи технических проблем и неполадок в чате Gitter по AndroidAPS.</string>
+    <string name="troubleshooting_gitter">Можно консультироваться, a также пересылать логи технических проблем и неполадок в чате Discord по AndroidAPS.</string>
     <string name="troubleshooting_yourendo">Вы должны спросить в диабетической клинике / у вашего врача-эндокринолога.</string>
     <string name="troubleshooting_hint1">https://androidaps.readthedocs.io/en/latest/EN/Installing-AndroidAPS/Update-to-new-version.html#troubleshooting</string>
     <string name="troubleshooting_hint2">https://www.facebook.com/groups/AndroidAPSUsers/</string>
-    <string name="troubleshooting_hint3">https://gitter.im/MilosKozak/AndroidAPS
- 
-Context | Edit Context</string>
+    <string name="troubleshooting_hint3">https://discord.gg/4fQUWHZ4Mw</string>
     <string name="insulin_label">Модули для инсулинов</string>
     <string name="insulin_ultrarapid">Какой инсулин следует использовать с модулем Сверхбыстрый Oref?</string>
     <string name="insulin_fiasp">Fiasp®</string>
@@ -125,6 +123,7 @@ Context | Edit Context</string>
     <string name="sensitivity_cannula">Внесение записи о замене катетера вернет коэффициент Autosens к 100%.</string>
     <string name="sensitivity_time">У некоторых опций модуля есть настраиваемые диапазоны времени, которые может задать пользователь.</string>
     <string name="sensitivity_hint1">https://androidaps.readthedocs.io/en/latest/EN/Configuration/Sensitivity-detection-and-COB.html</string>
+    <string name="sensitivity_hint2">https://androidaps.readthedocs.io/en/latest/Usage/Open-APS-features.html?highlight=Autosens#autosens</string>
     <string name="wrongcarbs_label">Ошибки записи углеводов</string>
     <string name="wrongcarbs_whattodo">Что нужно делать, если сделан неправильный ввод углеводов?</string>
     <string name="wrongcarbs_treatmentstab">Удалить неверную запись в Журнале терапии и заново ввести правильное значение углеводов.</string>
@@ -134,11 +133,23 @@ Context | Edit Context</string>
     <string name="wronginsulin_label">Ошибки подачи/поступления инсулина</string>
     <string name="wronginsulin_whattodo">Что делать, если вы получили меньше инсулина, чем указано в истории помпы, например, из-за окклюзии, проблем с канюлей или из-за того, что вы забыли подключить помпу обратно после душа?</string>
     <string name="wronginsulin_careportal">Удалить данные об инсулине в Портале терапии Nightscout, чтобы удалить их из истории помпы.</string>
-    <string name="wronginsulin_compare">Сравнить значения в AndroidAPS и истории помпы.</string>
+    <string name="wronginsulin_compare">Сравните значения в истории AndroidAPS и помпы (если помпа это поддерживает).</string>
     <string name="wronginsulin_prime">Рассчитать и ввести «пропущенный» вами инсулин шприцем/ручкой или через кнопку заполнения канюли.</string>
     <string name="wronginsulin_donothing">Ничего не делать и позволить AndroidAPS исправить возможный высокий уровень ГК.</string>
+    <string name="cob_label">Активные углеводы COB - углеводы в процессе компенсации</string>
+    <string name="cob_question">Как изменение значения ISF влияет на расчет COB?</string>
+    <string name="cob_longer">Увеличение фактора чувствительности ISF потребует больше времени на усвоение углеводов</string>
+    <string name="cob_shorter">Увеличение фактора чувствительности ISF потребует меньше времени на усвоение углеводов</string>
+    <string name="cob_no_effect">Увеличение фактора чувствительности ISF не повлияет на расчетное время усвоения углеводов</string>
+    <string name="cob2_question">Как изменение значения IC влияет на расчет COB?</string>
+    <string name="cob2_longer">Увеличение IC увеличит время усвоения углеводов</string>
+    <string name="cob2_shorter">Увеличение IC уменьшит время усвоения углеводов</string>
+    <string name="cob2_no_effect">Увеличение IC не повлияет на расчетное время усвоения углеводов</string>
+    <string name="cob3_question">Как изменение процента профиля влияет на расчет активных углеводов COB?</string>
+    <string name="cob3_longer">Установка профиля на 150% потребует больше времени на усвоение углеводов</string>
+    <string name="cob3_shorter">Установка профиля на 150% потребует меньше времени на усвоение углеводов</string>
+    <string name="cob3_no_effect">Установка профиля на 150% не повлияет на расчетное время усвоения углеводов</string>
     <string name="iob_label">Активный инсулин (IOB)</string>
-    <string name="iob_which">Отметьте все правильные ответы.</string>
     <string name="iob_value">На величину IOB влияют устанавливаемые ВБС.</string>
     <string name="iob_hightemp">Высокая ВБС не будет применяться, если уровень сахара в крови ниже целевого.</string>
     <string name="iob_negiob">Отрицательный IOB в течение длительного периода при отсутствии физнагрузки указывает на то, что ваш профиль завышен и требуется снизить кол-во инсулина в настройках.</string>

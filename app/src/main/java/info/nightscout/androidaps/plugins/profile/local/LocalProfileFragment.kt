@@ -8,93 +8,122 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.google.android.material.tabs.TabLayout
 import dagger.android.support.DaggerFragment
 import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
-import info.nightscout.androidaps.data.Profile
+import info.nightscout.androidaps.activities.SingleFragmentActivity
+import info.nightscout.androidaps.data.ProfileSealed
+import info.nightscout.androidaps.database.entities.UserEntry.Action
+import info.nightscout.androidaps.database.entities.UserEntry.Sources
+import info.nightscout.androidaps.database.entities.ValueWithUnit
+import info.nightscout.androidaps.databinding.LocalprofileFragmentBinding
 import info.nightscout.androidaps.dialogs.ProfileSwitchDialog
-import info.nightscout.androidaps.interfaces.ActivePluginProvider
-import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.plugins.bus.RxBusWrapper
-import info.nightscout.androidaps.plugins.insulin.InsulinOrefBasePlugin.Companion.MIN_DIA
+import info.nightscout.androidaps.extensions.toVisibility
+import info.nightscout.androidaps.interfaces.ActivePlugin
+import info.nightscout.androidaps.interfaces.GlucoseUnit
+import info.nightscout.androidaps.interfaces.Profile
+import info.nightscout.androidaps.interfaces.ProfileFunction
+import info.nightscout.androidaps.logging.UserEntryLogger
+import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.profile.local.events.EventLocalProfileChanged
-import info.nightscout.androidaps.utils.*
+import info.nightscout.androidaps.utils.DateUtil
+import info.nightscout.androidaps.utils.DecimalFormatter
+import info.nightscout.androidaps.utils.FabricPrivacy
+import info.nightscout.androidaps.utils.HardLimits
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
-import info.nightscout.androidaps.utils.extensions.plusAssign
-import info.nightscout.androidaps.utils.resources.ResourceHelper
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.localprofile_fragment.*
+import info.nightscout.androidaps.utils.protection.ProtectionCheck
+import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.androidaps.utils.rx.AapsSchedulers
+import info.nightscout.androidaps.utils.ui.TimeListEdit
+import info.nightscout.shared.SafeParse
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.shared.logging.LTag
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import javax.inject.Inject
 
 class LocalProfileFragment : DaggerFragment() {
+
     @Inject lateinit var aapsLogger: AAPSLogger
-    @Inject lateinit var rxBus: RxBusWrapper
-    @Inject lateinit var resourceHelper: ResourceHelper
-    @Inject lateinit var activePlugin: ActivePluginProvider
+    @Inject lateinit var rxBus: RxBus
+    @Inject lateinit var rh: ResourceHelper
+    @Inject lateinit var activePlugin: ActivePlugin
     @Inject lateinit var fabricPrivacy: FabricPrivacy
     @Inject lateinit var localProfilePlugin: LocalProfilePlugin
+    @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var hardLimits: HardLimits
+    @Inject lateinit var protectionCheck: ProtectionCheck
     @Inject lateinit var dateUtil: DateUtil
+    @Inject lateinit var aapsSchedulers: AapsSchedulers
+    @Inject lateinit var uel: UserEntryLogger
 
     private var disposable: CompositeDisposable = CompositeDisposable()
-
+    private var inMenu = false
+    private var queryingProtection = false
     private var basalView: TimeListEdit? = null
-    private var spinner: SpinnerHelper? = null
 
     private val save = Runnable {
         doEdit()
-        basalView?.updateLabel(resourceHelper.gs(R.string.basal_label) + ": " + sumLabel())
+        basalView?.updateLabel(rh.gs(R.string.basal_label) + ": " + sumLabel())
+        localProfilePlugin.getEditedProfile()?.let {
+            binding.basalGraph.show(ProfileSealed.Pure(it))
+            binding.icGraph.show(ProfileSealed.Pure(it))
+            binding.isfGraph.show(ProfileSealed.Pure(it))
+            binding.targetGraph.show(ProfileSealed.Pure(it))
+            binding.insulinGraph.show(activePlugin.activeInsulin, SafeParse.stringToDouble(binding.dia.text))
+        }
     }
 
     private val textWatch = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {}
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            localProfilePlugin.currentProfile()?.dia = SafeParse.stringToDouble(localprofile_dia.text.toString())
-            localProfilePlugin.currentProfile()?.name = localprofile_name.text.toString()
+            localProfilePlugin.currentProfile()?.dia = SafeParse.stringToDouble(binding.dia.text)
+            localProfilePlugin.currentProfile()?.name = binding.name.text.toString()
             doEdit()
         }
     }
 
     private fun sumLabel(): String {
-        val profile = localProfilePlugin.createProfileStore().getDefaultProfile()
-        val sum = profile?.baseBasalSum() ?: 0.0
-        return " ∑" + DecimalFormatter.to2Decimal(sum) + resourceHelper.gs(R.string.insulin_unit_shortname)
+        val profile = localProfilePlugin.getEditedProfile()
+        val sum = profile?.let { ProfileSealed.Pure(profile).baseBasalSum() } ?: 0.0
+        return " ∑" + DecimalFormatter.to2Decimal(sum) + rh.gs(R.string.insulin_unit_shortname)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.localprofile_fragment, container, false)
+    private var _binding: LocalprofileFragmentBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = LocalprofileFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // activate DIA tab
-        processVisibilityOnClick(dia_tab)
-        localprofile_dia_placeholder.visibility = View.VISIBLE
-        // setup listeners
-        dia_tab.setOnClickListener {
-            processVisibilityOnClick(it)
-            localprofile_dia_placeholder.visibility = View.VISIBLE
-        }
-        ic_tab.setOnClickListener {
-            processVisibilityOnClick(it)
-            localprofile_ic.visibility = View.VISIBLE
-        }
-        isf_tab.setOnClickListener {
-            processVisibilityOnClick(it)
-            localprofile_isf.visibility = View.VISIBLE
-        }
-        basal_tab.setOnClickListener {
-            processVisibilityOnClick(it)
-            localprofile_basal.visibility = View.VISIBLE
-        }
-        target_tab.setOnClickListener {
-            processVisibilityOnClick(it)
-            localprofile_target.visibility = View.VISIBLE
-        }
+        val parentClass = this.activity?.let { it::class.java }
+        inMenu = parentClass == SingleFragmentActivity::class.java
+        updateProtectedUi()
+        processVisibility(0)
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                processVisibility(tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+        binding.diaLabel.labelFor = binding.dia.editTextId
+        binding.unlock.setOnClickListener { queryProtection() }
+
+        val profiles = localProfilePlugin.profile?.getProfileList() ?: ArrayList()
+        val activeProfile = profileFunction.getProfileName()
+        val profileIndex = profiles.indexOf(activeProfile)
+        localProfilePlugin.currentProfileIndex = if (profileIndex >= 0) profileIndex else 0
     }
 
     fun build() {
@@ -103,72 +132,160 @@ class LocalProfileFragment : DaggerFragment() {
         val currentProfile = localProfilePlugin.currentProfile() ?: return
         val units = if (currentProfile.mgdl) Constants.MGDL else Constants.MMOL
 
-        localprofile_name.removeTextChangedListener(textWatch)
-        localprofile_name.setText(currentProfile.name)
-        localprofile_name.addTextChangedListener(textWatch)
-        localprofile_dia.setParams(currentProfile.dia, hardLimits.minDia(), hardLimits.maxDia(), 0.1, DecimalFormat("0.0"), false, localprofile_save, textWatch)
-        localprofile_dia.tag = "LP_DIA"
-        TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_ic, "IC", resourceHelper.gs(R.string.ic_label), currentProfile.ic, null, hardLimits.minIC(), hardLimits.maxIC(), 0.1, DecimalFormat("0.0"), save)
-        basalView = TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_basal, "BASAL", resourceHelper.gs(R.string.basal_label) + ": " + sumLabel(), currentProfile.basal, null, pumpDescription.basalMinimumRate, 10.0, 0.01, DecimalFormat("0.00"), save)
+        binding.name.removeTextChangedListener(textWatch)
+        binding.name.setText(currentProfile.name)
+        binding.name.addTextChangedListener(textWatch)
+        binding.dia.setParams(currentProfile.dia, hardLimits.minDia(), hardLimits.maxDia(), 0.1, DecimalFormat("0.0"), false, null, textWatch)
+        binding.dia.tag = "LP_DIA"
+        TimeListEdit(
+            context,
+            aapsLogger,
+            dateUtil,
+            view,
+            R.id.ic_holder,
+            "IC",
+            rh.gs(R.string.ic_long_label),
+            currentProfile.ic,
+            null,
+            doubleArrayOf(hardLimits.minIC(), hardLimits.maxIC()),
+            null,
+            0.1,
+            DecimalFormat("0.0"),
+            save
+        )
+        basalView =
+            TimeListEdit(
+                context,
+                aapsLogger,
+                dateUtil,
+                view,
+                R.id.basal_holder,
+                "BASAL",
+                rh.gs(R.string.basal_long_label) + ": " + sumLabel(),
+                currentProfile.basal,
+                null,
+                doubleArrayOf(pumpDescription.basalMinimumRate, pumpDescription.basalMaximumRate),
+                null,
+                0.01,
+                DecimalFormat("0.00"),
+                save
+            )
         if (units == Constants.MGDL) {
-            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_isf, "ISF", resourceHelper.gs(R.string.isf_label), currentProfile.isf, null, hardLimits.MINISF, hardLimits.MAXISF, 1.0, DecimalFormat("0"), save)
-            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_target, "TARGET", resourceHelper.gs(R.string.target_label), currentProfile.targetLow, currentProfile.targetHigh, hardLimits.VERY_HARD_LIMIT_TARGET_BG[0].toDouble(), hardLimits.VERY_HARD_LIMIT_TARGET_BG[1].toDouble(), 1.0, DecimalFormat("0"), save)
+            val isfRange = doubleArrayOf(HardLimits.MIN_ISF, HardLimits.MAX_ISF)
+            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.isf_holder, "ISF", rh.gs(R.string.isf_long_label), currentProfile.isf, null, isfRange, null, 1.0, DecimalFormat("0"), save)
+            TimeListEdit(
+                context,
+                aapsLogger,
+                dateUtil,
+                view,
+                R.id.target_holder,
+                "TARGET",
+                rh.gs(R.string.target_long_label),
+                currentProfile.targetLow,
+                currentProfile.targetHigh,
+                HardLimits.VERY_HARD_LIMIT_MIN_BG,
+                HardLimits.VERY_HARD_LIMIT_TARGET_BG,
+                1.0,
+                DecimalFormat("0"),
+                save
+            )
         } else {
-            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_isf, "ISF", resourceHelper.gs(R.string.isf_label), currentProfile.isf, null, Profile.fromMgdlToUnits(hardLimits.MINISF, Constants.MMOL), Profile.fromMgdlToUnits(hardLimits.MAXISF, Constants.MMOL), 0.1, DecimalFormat("0.0"), save)
-            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.localprofile_target, "TARGET", resourceHelper.gs(R.string.target_label), currentProfile.targetLow, currentProfile.targetHigh, Profile.fromMgdlToUnits(hardLimits.VERY_HARD_LIMIT_TARGET_BG[0].toDouble(), Constants.MMOL), Profile.fromMgdlToUnits(hardLimits.VERY_HARD_LIMIT_TARGET_BG[1].toDouble(), Constants.MMOL), 0.1, DecimalFormat("0.0"), save)
+            val isfRange = doubleArrayOf(
+                roundUp(Profile.fromMgdlToUnits(HardLimits.MIN_ISF, GlucoseUnit.MMOL)),
+                roundDown(Profile.fromMgdlToUnits(HardLimits.MAX_ISF, GlucoseUnit.MMOL))
+            )
+            TimeListEdit(context, aapsLogger, dateUtil, view, R.id.isf_holder, "ISF", rh.gs(R.string.isf_long_label), currentProfile.isf, null, isfRange, null, 0.1, DecimalFormat("0.0"), save)
+            val range1 = doubleArrayOf(
+                roundUp(Profile.fromMgdlToUnits(HardLimits.VERY_HARD_LIMIT_MIN_BG[0], GlucoseUnit.MMOL)),
+                roundDown(Profile.fromMgdlToUnits(HardLimits.VERY_HARD_LIMIT_MIN_BG[1], GlucoseUnit.MMOL))
+            )
+            val range2 = doubleArrayOf(
+                roundUp(Profile.fromMgdlToUnits(HardLimits.VERY_HARD_LIMIT_MAX_BG[0], GlucoseUnit.MMOL)),
+                roundDown(Profile.fromMgdlToUnits(HardLimits.VERY_HARD_LIMIT_MAX_BG[1], GlucoseUnit.MMOL))
+            )
+            aapsLogger.info(LTag.CORE, "TimeListEdit", "build: range1" + range1[0] + " " + range1[1] + " range2" + range2[0] + " " + range2[1])
+            TimeListEdit(
+                context,
+                aapsLogger,
+                dateUtil,
+                view,
+                R.id.target_holder,
+                "TARGET",
+                rh.gs(R.string.target_long_label),
+                currentProfile.targetLow,
+                currentProfile.targetHigh,
+                range1,
+                range2,
+                0.1,
+                DecimalFormat("0.0"),
+                save
+            )
         }
 
-        // Spinner
-        spinner = SpinnerHelper(view?.findViewById(R.id.localprofile_spinner))
-        val profileList: ArrayList<CharSequence> = localProfilePlugin.profile?.getProfileList()
-            ?: ArrayList()
         context?.let { context ->
-            val adapter = ArrayAdapter(context, R.layout.spinner_centered, profileList)
-            spinner?.adapter = adapter
-            spinner?.setSelection(localProfilePlugin.currentProfileIndex)
+            val profileList: ArrayList<CharSequence> = localProfilePlugin.profile?.getProfileList() ?: ArrayList()
+            binding.profileList.setAdapter(ArrayAdapter(context, R.layout.spinner_centered, profileList))
         } ?: return
-        spinner?.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (localProfilePlugin.isEdited) {
-                    activity?.let { activity ->
-                        OKDialog.showConfirmation(activity, resourceHelper.gs(R.string.doyouwantswitchprofile), Runnable {
-                            localProfilePlugin.currentProfileIndex = position
-                            build()
-                        }, Runnable {
-                            spinner?.setSelection(localProfilePlugin.currentProfileIndex)
-                        })
-                    }
-                } else {
-                    localProfilePlugin.currentProfileIndex = position
-                    build()
-                }
-            }
-        })
-
-        localprofile_profile_add.setOnClickListener {
+        binding.profileList.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             if (localProfilePlugin.isEdited) {
-                activity?.let { OKDialog.show(it, "", resourceHelper.gs(R.string.saveorresetchangesfirst)) }
+                activity?.let { activity ->
+                    OKDialog.showConfirmation(
+                        activity, rh.gs(R.string.doyouwantswitchprofile),
+                        {
+                            localProfilePlugin.currentProfileIndex = position
+                            localProfilePlugin.isEdited = false
+                            build()
+                        }, null
+                    )
+                }
             } else {
+                localProfilePlugin.currentProfileIndex = position
+                build()
+            }
+        }
+        localProfilePlugin.getEditedProfile()?.let {
+            binding.basalGraph.show(ProfileSealed.Pure(it))
+            binding.icGraph.show(ProfileSealed.Pure(it))
+            binding.isfGraph.show(ProfileSealed.Pure(it))
+            binding.targetGraph.show(ProfileSealed.Pure(it))
+            binding.insulinGraph.show(activePlugin.activeInsulin, SafeParse.stringToDouble(binding.dia.text))
+        }
+
+        binding.profileAdd.setOnClickListener {
+            if (localProfilePlugin.isEdited) {
+                activity?.let { OKDialog.show(it, "", rh.gs(R.string.saveorresetchangesfirst)) }
+            } else {
+                uel.log(Action.NEW_PROFILE, Sources.LocalProfile)
                 localProfilePlugin.addNewProfile()
                 build()
             }
         }
 
-        localprofile_profile_clone.setOnClickListener {
+        binding.profileClone.setOnClickListener {
             if (localProfilePlugin.isEdited) {
-                activity?.let { OKDialog.show(it, "", resourceHelper.gs(R.string.saveorresetchangesfirst)) }
+                activity?.let { OKDialog.show(it, "", rh.gs(R.string.saveorresetchangesfirst)) }
             } else {
+                uel.log(
+                    Action.CLONE_PROFILE, Sources.LocalProfile, ValueWithUnit.SimpleString(
+                        localProfilePlugin.currentProfile()?.name
+                            ?: ""
+                    )
+                )
                 localProfilePlugin.cloneProfile()
                 build()
             }
         }
 
-        localprofile_profile_remove.setOnClickListener {
+        binding.profileRemove.setOnClickListener {
             activity?.let { activity ->
-                OKDialog.showConfirmation(activity, resourceHelper.gs(R.string.deletecurrentprofile), Runnable {
+                OKDialog.showConfirmation(activity, rh.gs(R.string.deletecurrentprofile), {
+                    uel.log(
+                        Action.PROFILE_REMOVED, Sources.LocalProfile, ValueWithUnit.SimpleString(
+                            localProfilePlugin.currentProfile()?.name
+                                ?: ""
+                        )
+                    )
                     localProfilePlugin.removeCurrentProfile()
                     build()
                 }, null)
@@ -176,26 +293,32 @@ class LocalProfileFragment : DaggerFragment() {
         }
 
         // this is probably not possible because it leads to invalid profile
-        // if (!pumpDescription.isTempBasalCapable) localprofile_basal.visibility = View.GONE
+        // if (!pumpDescription.isTempBasalCapable) binding.basal.visibility = View.GONE
 
         @Suppress("SetTextI18n")
-        localprofile_units.text = resourceHelper.gs(R.string.units_colon) + " " + (if (currentProfile.mgdl) resourceHelper.gs(R.string.mgdl) else resourceHelper.gs(R.string.mmol))
+        binding.units.text = rh.gs(R.string.units_colon) + " " + (if (currentProfile.mgdl) rh.gs(R.string.mgdl) else rh.gs(R.string.mmol))
 
-        localprofile_profileswitch.setOnClickListener {
+        binding.profileswitch.setOnClickListener {
             ProfileSwitchDialog()
-                .also { it.arguments = Bundle().also { bundle -> bundle.putInt("profileIndex", localProfilePlugin.currentProfileIndex) } }
-                .show(childFragmentManager, "NewNSTreatmentDialog")
+                .also { it.arguments = Bundle().also { bundle -> bundle.putString("profileName", localProfilePlugin.currentProfile()?.name) } }
+                .show(childFragmentManager, "ProfileSwitchDialog")
         }
 
-        localprofile_reset.setOnClickListener {
+        binding.reset.setOnClickListener {
             localProfilePlugin.loadSettings()
             build()
         }
 
-        localprofile_save.setOnClickListener {
-            if (!localProfilePlugin.isValidEditState()) {
+        binding.save.setOnClickListener {
+            if (!localProfilePlugin.isValidEditState(activity)) {
                 return@setOnClickListener  //Should not happen as saveButton should not be visible if not valid
             }
+            uel.log(
+                Action.STORE_PROFILE, Sources.LocalProfile, ValueWithUnit.SimpleString(
+                    localProfilePlugin.currentProfile()?.name
+                        ?: ""
+                )
+            )
             localProfilePlugin.storeSettings(activity)
             build()
         }
@@ -205,11 +328,11 @@ class LocalProfileFragment : DaggerFragment() {
     @Synchronized
     override fun onResume() {
         super.onResume()
+        if (inMenu) queryProtection() else updateProtectedUi()
         disposable += rxBus
             .toObservable(EventLocalProfileChanged::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ build() }, { fabricPrivacy.logException(it) }
-            )
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ build() }, fabricPrivacy::logException)
         build()
     }
 
@@ -219,51 +342,79 @@ class LocalProfileFragment : DaggerFragment() {
         disposable.clear()
     }
 
+    @Synchronized
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     fun doEdit() {
         localProfilePlugin.isEdited = true
         updateGUI()
     }
 
-    fun updateGUI() {
-        if (localprofile_profileswitch == null) return
-        val isValid = localProfilePlugin.isValidEditState()
+    private fun roundUp(number: Double): Double {
+        return number.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
+    }
+
+    private fun roundDown(number: Double): Double {
+        return number.toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
+    }
+
+    private fun updateGUI() {
+        if (_binding == null) return
+        val isValid = localProfilePlugin.isValidEditState(activity)
         val isEdited = localProfilePlugin.isEdited
         if (isValid) {
-            this.view?.setBackgroundColor(resourceHelper.gc(R.color.ok_background))
+            this.view?.setBackgroundColor(rh.gac(context, R.attr.okBackgroundColor))
+            binding.profileList.isEnabled = true
 
             if (isEdited) {
                 //edited profile -> save first
-                localprofile_profileswitch.visibility = View.GONE
-                localprofile_save.visibility = View.VISIBLE
+                binding.profileswitch.visibility = View.GONE
+                binding.save.visibility = View.VISIBLE
             } else {
-                localprofile_profileswitch.visibility = View.VISIBLE
-                localprofile_save.visibility = View.GONE
+                binding.profileswitch.visibility = View.VISIBLE
+                binding.save.visibility = View.GONE
             }
         } else {
-            this.view?.setBackgroundColor(resourceHelper.gc(R.color.error_background))
-            localprofile_profileswitch.visibility = View.GONE
-            localprofile_save.visibility = View.GONE //don't save an invalid profile
+            this.view?.setBackgroundColor(rh.gac(context, R.attr.errorBackgroundColor))
+            binding.profileList.isEnabled = false
+            binding.profileswitch.visibility = View.GONE
+            binding.save.visibility = View.GONE //don't save an invalid profile
         }
 
         //Show reset button if data was edited
         if (isEdited) {
-            localprofile_reset.visibility = View.VISIBLE
+            binding.reset.visibility = View.VISIBLE
         } else {
-            localprofile_reset.visibility = View.GONE
+            binding.reset.visibility = View.GONE
         }
     }
 
-    private fun processVisibilityOnClick(selected: View) {
-        dia_tab.setBackgroundColor(resourceHelper.gc(R.color.defaultbackground))
-        ic_tab.setBackgroundColor(resourceHelper.gc(R.color.defaultbackground))
-        isf_tab.setBackgroundColor(resourceHelper.gc(R.color.defaultbackground))
-        basal_tab.setBackgroundColor(resourceHelper.gc(R.color.defaultbackground))
-        target_tab.setBackgroundColor(resourceHelper.gc(R.color.defaultbackground))
-        selected.setBackgroundColor(resourceHelper.gc(R.color.tabBgColorSelected))
-        localprofile_dia_placeholder.visibility = View.GONE
-        localprofile_ic.visibility = View.GONE
-        localprofile_isf.visibility = View.GONE
-        localprofile_basal.visibility = View.GONE
-        localprofile_target.visibility = View.GONE
+    private fun processVisibility(position: Int) {
+        binding.diaPlaceholder.visibility = (position == 0).toVisibility()
+        binding.ic.visibility = (position == 1).toVisibility()
+        binding.isf.visibility = (position == 2).toVisibility()
+        binding.basal.visibility = (position == 3).toVisibility()
+        binding.target.visibility = (position == 4).toVisibility()
+    }
+
+    private fun updateProtectedUi() {
+        _binding ?: return
+        val isLocked = protectionCheck.isLocked(ProtectionCheck.Protection.PREFERENCES)
+        binding.mainLayout.visibility = isLocked.not().toVisibility()
+        binding.unlock.visibility = isLocked.toVisibility()
+    }
+
+    private fun queryProtection() {
+        val isLocked = protectionCheck.isLocked(ProtectionCheck.Protection.PREFERENCES)
+        if (isLocked && !queryingProtection) {
+            activity?.let { activity ->
+                queryingProtection = true
+                val doUpdate = { activity.runOnUiThread { queryingProtection = false; updateProtectedUi() } }
+                protectionCheck.queryProtection(activity, ProtectionCheck.Protection.PREFERENCES, doUpdate, doUpdate, doUpdate)
+            }
+        }
     }
 }

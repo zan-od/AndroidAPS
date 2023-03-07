@@ -1,38 +1,45 @@
 package info.nightscout.androidaps.danars.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import info.nightscout.androidaps.activities.NoSplashAppCompatActivity
 import info.nightscout.androidaps.danars.R
 import info.nightscout.androidaps.danars.databinding.DanarsBlescannerActivityBinding
 import info.nightscout.androidaps.danars.events.EventDanaRSDeviceChange
-import info.nightscout.androidaps.plugins.bus.RxBusWrapper
 import info.nightscout.androidaps.plugins.pump.common.ble.BlePreCheck
-import info.nightscout.androidaps.utils.sharedPreferences.SP
-import java.util.*
+import info.nightscout.androidaps.utils.ToastUtils
+import info.nightscout.shared.sharedPreferences.SP
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 class BLEScanActivity : NoSplashAppCompatActivity() {
 
     @Inject lateinit var sp: SP
-    @Inject lateinit var rxBus: RxBusWrapper
     @Inject lateinit var blePreCheck: BlePreCheck
+    @Inject lateinit var context: Context
 
     private var listAdapter: ListAdapter? = null
     private val devices = ArrayList<BluetoothDeviceItem>()
-    private var bluetoothLeScanner: BluetoothLeScanner? = null
+    private val bluetoothAdapter: BluetoothAdapter? get() = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?)?.adapter
+    private val bluetoothLeScanner: BluetoothLeScanner? get() = bluetoothAdapter?.bluetoothLeScanner
 
     private lateinit var binding: DanarsBlescannerActivityBinding
 
@@ -54,10 +61,11 @@ class BLEScanActivity : NoSplashAppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        BluetoothAdapter.getDefaultAdapter()?.let { bluetoothAdapter ->
-            if (!bluetoothAdapter.isEnabled) bluetoothAdapter.enable()
-            bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+            if (bluetoothAdapter?.isEnabled != true) bluetoothAdapter?.enable()
             startScan()
+        } else {
+            ToastUtils.errorToast(context, context.getString(info.nightscout.androidaps.core.R.string.needconnectpermission))
         }
     }
 
@@ -67,17 +75,26 @@ class BLEScanActivity : NoSplashAppCompatActivity() {
     }
 
     private fun startScan() =
-        try {
-            bluetoothLeScanner?.startScan(mBleScanCallback)
-        } catch (e: IllegalStateException) {
-        } // ignore BT not on
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                bluetoothLeScanner?.startScan(mBleScanCallback)
+            } catch (ignore: IllegalStateException) {
+            } // ignore BT not on
+        } else {
+            ToastUtils.errorToast(context, context.getString(info.nightscout.androidaps.core.R.string.needconnectpermission))
+        }
 
     private fun stopScan() =
-        try {
-            bluetoothLeScanner?.stopScan(mBleScanCallback)
-        } catch (e: IllegalStateException) {
-        } // ignore BT not on
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                bluetoothLeScanner?.stopScan(mBleScanCallback)
+            } catch (ignore: IllegalStateException) {
+            } // ignore BT not on
+        } else {
+            ToastUtils.errorToast(context, context.getString(info.nightscout.androidaps.core.R.string.needconnectpermission))
+        }
 
+    @SuppressLint("MissingPermission")
     private fun addBleDevice(device: BluetoothDevice?) {
         if (device == null || device.name == null || device.name == "") {
             return
@@ -87,7 +104,7 @@ class BLEScanActivity : NoSplashAppCompatActivity() {
             return
         }
         devices.add(item)
-        Handler().post { listAdapter!!.notifyDataSetChanged() }
+        Handler(Looper.getMainLooper()).post { listAdapter?.notifyDataSetChanged() }
     }
 
     private val mBleScanCallback: ScanCallback = object : ScanCallback() {
@@ -131,11 +148,16 @@ class BLEScanActivity : NoSplashAppCompatActivity() {
             override fun onClick(v: View) {
                 sp.putString(R.string.key_danars_address, item.device.address)
                 sp.putString(R.string.key_danars_name, name.text.toString())
-                item.device.createBond()
-                rxBus.send(EventDanaRSDeviceChange())
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                    item.device.createBond()
+                    rxBus.send(EventDanaRSDeviceChange())
+                } else {
+                    ToastUtils.errorToast(context, context.getString(info.nightscout.androidaps.core.R.string.needconnectpermission))
+                }
                 finish()
             }
 
+            @SuppressLint("MissingPermission")
             fun setData(data: BluetoothDeviceItem) {
                 var tTitle = data.device.name
                 if (tTitle == null || tTitle == "") {
@@ -172,7 +194,7 @@ class BLEScanActivity : NoSplashAppCompatActivity() {
         override fun hashCode(): Int = device.hashCode()
     }
 
-    private fun isSNCheck(sn: String?): Boolean {
+    private fun isSNCheck(sn: String): Boolean {
         val regex = "^([a-zA-Z]{3})([0-9]{5})([a-zA-Z]{2})$"
         val p = Pattern.compile(regex)
         val m = p.matcher(sn)

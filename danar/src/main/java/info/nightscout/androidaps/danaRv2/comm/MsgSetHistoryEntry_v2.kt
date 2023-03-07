@@ -2,7 +2,7 @@ package info.nightscout.androidaps.danaRv2.comm
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.danar.comm.MessageBase
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 import java.util.*
 
 class MsgSetHistoryEntry_v2(
@@ -11,13 +11,13 @@ class MsgSetHistoryEntry_v2(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0xE004)
-        AddParamByte(type.toByte())
+        setCommand(0xE004)
+        addParamByte(type.toByte())
         val gtime = GregorianCalendar()
         gtime.timeInMillis = time
-        AddParamDateTime(gtime)
-        AddParamInt(param1)
-        AddParamInt(param2)
+        addParamDateTime(gtime)
+        addParamInt(param1)
+        addParamInt(param2)
         aapsLogger.debug(LTag.PUMPCOMM, "Set history entry: type: " + type + " date: " + Date(time).toString() + " param1: " + param1 + " param2: " + param2)
     }
 

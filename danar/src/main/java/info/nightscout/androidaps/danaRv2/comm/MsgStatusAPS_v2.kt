@@ -2,14 +2,14 @@ package info.nightscout.androidaps.danaRv2.comm
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.danar.comm.MessageBase
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 class MsgStatusAPS_v2(
     injector: HasAndroidInjector
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0xE001)
+        setCommand(0xE001)
         aapsLogger.debug(LTag.PUMPCOMM, "New message")
     }
 

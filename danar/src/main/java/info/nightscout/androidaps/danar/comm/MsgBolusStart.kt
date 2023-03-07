@@ -2,7 +2,7 @@ package info.nightscout.androidaps.danar.comm
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.interfaces.Constraint
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 
 class MsgBolusStart(
     injector: HasAndroidInjector,
@@ -10,10 +10,10 @@ class MsgBolusStart(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x0102)
+        setCommand(0x0102)
         // HARDCODED LIMIT
         amount = constraintChecker.applyBolusConstraints(Constraint(amount)).value()
-        AddParamInt((amount * 100).toInt())
+        addParamInt((amount * 100).toInt())
         aapsLogger.debug(LTag.PUMPBTCOMM, "Bolus start : $amount")
     }
 

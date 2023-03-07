@@ -10,163 +10,185 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import dagger.android.support.DaggerFragment
-import info.nightscout.androidaps.Config
-import info.nightscout.androidaps.Constants
 import info.nightscout.androidaps.R
 import info.nightscout.androidaps.activities.ErrorHelperActivity
+import info.nightscout.androidaps.activities.HistoryBrowseActivity
 import info.nightscout.androidaps.activities.TDDStatsActivity
+import info.nightscout.androidaps.database.AppRepository
+import info.nightscout.androidaps.database.ValueWrapper
+import info.nightscout.androidaps.database.entities.UserEntry.Action
+import info.nightscout.androidaps.database.entities.UserEntry.Sources
+import info.nightscout.androidaps.databinding.ActionsFragmentBinding
 import info.nightscout.androidaps.dialogs.*
-import info.nightscout.androidaps.events.*
-import info.nightscout.androidaps.historyBrowser.HistoryBrowseActivity
-import info.nightscout.androidaps.interfaces.ActivePluginProvider
-import info.nightscout.androidaps.interfaces.CommandQueueProvider
-import info.nightscout.androidaps.interfaces.ProfileFunction
-import info.nightscout.androidaps.logging.AAPSLogger
-import info.nightscout.androidaps.plugins.bus.RxBusWrapper
+import info.nightscout.androidaps.events.EventCustomActionsChanged
+import info.nightscout.androidaps.events.EventExtendedBolusChange
+import info.nightscout.androidaps.events.EventInitializationChanged
+import info.nightscout.androidaps.events.EventTempBasalChange
+import info.nightscout.androidaps.events.EventTherapyEventChange
+import info.nightscout.androidaps.extensions.toStringMedium
+import info.nightscout.androidaps.extensions.toStringShort
+import info.nightscout.androidaps.extensions.toVisibility
+import info.nightscout.androidaps.interfaces.*
+import info.nightscout.shared.logging.AAPSLogger
+import info.nightscout.androidaps.logging.UserEntryLogger
+import info.nightscout.androidaps.plugins.bus.RxBus
 import info.nightscout.androidaps.plugins.general.actions.defs.CustomAction
 import info.nightscout.androidaps.plugins.general.overview.StatusLightHandler
-import info.nightscout.androidaps.plugins.pump.omnipod.OmnipodPumpPlugin
 import info.nightscout.androidaps.queue.Callback
 import info.nightscout.androidaps.skins.SkinProvider
+import info.nightscout.androidaps.utils.DateUtil
 import info.nightscout.androidaps.utils.FabricPrivacy
 import info.nightscout.androidaps.utils.alertDialogs.OKDialog
-import info.nightscout.androidaps.utils.buildHelper.BuildHelper
-import info.nightscout.androidaps.utils.extensions.plusAssign
-import info.nightscout.androidaps.utils.extensions.toVisibility
+import info.nightscout.androidaps.interfaces.BuildHelper
 import info.nightscout.androidaps.utils.protection.ProtectionCheck
-import info.nightscout.androidaps.utils.resources.ResourceHelper
-import info.nightscout.androidaps.utils.sharedPreferences.SP
+import info.nightscout.androidaps.interfaces.ResourceHelper
+import info.nightscout.androidaps.utils.rx.AapsSchedulers
+import info.nightscout.shared.sharedPreferences.SP
 import info.nightscout.androidaps.utils.ui.SingleClickButton
 import info.nightscout.androidaps.utils.ui.UIRunnable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.actions_fragment.*
-import kotlinx.android.synthetic.main.careportal_stats_fragment.*
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import java.util.*
 import javax.inject.Inject
 
 class ActionsFragment : DaggerFragment() {
 
     @Inject lateinit var aapsLogger: AAPSLogger
-    @Inject lateinit var rxBus: RxBusWrapper
+    @Inject lateinit var aapsSchedulers: AapsSchedulers
+    @Inject lateinit var rxBus: RxBus
     @Inject lateinit var sp: SP
+    @Inject lateinit var dateUtil: DateUtil
     @Inject lateinit var profileFunction: ProfileFunction
     @Inject lateinit var ctx: Context
-    @Inject lateinit var resourceHelper: ResourceHelper
+    @Inject lateinit var rh: ResourceHelper
     @Inject lateinit var statusLightHandler: StatusLightHandler
     @Inject lateinit var fabricPrivacy: FabricPrivacy
-    @Inject lateinit var activePlugin: ActivePluginProvider
-    @Inject lateinit var commandQueue: CommandQueueProvider
+    @Inject lateinit var activePlugin: ActivePlugin
+    @Inject lateinit var iobCobCalculator: IobCobCalculator
+    @Inject lateinit var commandQueue: CommandQueue
     @Inject lateinit var buildHelper: BuildHelper
     @Inject lateinit var protectionCheck: ProtectionCheck
     @Inject lateinit var skinProvider: SkinProvider
     @Inject lateinit var config: Config
+    @Inject lateinit var uel: UserEntryLogger
+    @Inject lateinit var repository: AppRepository
+    @Inject lateinit var loop: Loop
 
     private var disposable: CompositeDisposable = CompositeDisposable()
 
     private val pumpCustomActions = HashMap<String, CustomAction>()
     private val pumpCustomButtons = ArrayList<SingleClickButton>()
-    private var smallWidth = false
-    private var smallHeight = false
     private lateinit var dm: DisplayMetrics
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var _binding: ActionsFragmentBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         //check screen width
         dm = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(dm)
-
-        val screenWidth = dm.widthPixels
-        val screenHeight = dm.heightPixels
-        smallWidth = screenWidth <= Constants.SMALL_WIDTH
-        smallHeight = screenHeight <= Constants.SMALL_HEIGHT
-        val landscape = screenHeight < screenWidth
-
-        return inflater.inflate(skinProvider.activeSkin().actionsLayout(landscape, smallWidth), container, false)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            @Suppress("DEPRECATION")
+            activity?.display?.getRealMetrics(dm)
+        } else {
+            @Suppress("DEPRECATION")
+            activity?.windowManager?.defaultDisplay?.getMetrics(dm)
+        }
+        _binding = ActionsFragmentBinding.inflate(inflater, container, false)
+        return  binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        actions_profileswitch.setOnClickListener {
-            ProfileSwitchDialog().show(childFragmentManager, "Actions")
+        skinProvider.activeSkin().preProcessLandscapeActionsLayout(dm, binding)
+
+        binding.profileSwitch.setOnClickListener {
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { ProfileSwitchDialog().show(childFragmentManager, "ProfileSwitchDialog")})
+            }
         }
-        actions_temptarget.setOnClickListener {
-            TempTargetDialog().show(childFragmentManager, "Actions")
+        binding.tempTarget.setOnClickListener {
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { TempTargetDialog().show(childFragmentManager, "Actions") })
+            }
         }
-        actions_extendedbolus.setOnClickListener {
+        binding.extendedBolus.setOnClickListener {
             activity?.let { activity ->
                 protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable {
-                    OKDialog.showConfirmation(activity, resourceHelper.gs(R.string.extended_bolus), resourceHelper.gs(R.string.ebstopsloop),
+                    OKDialog.showConfirmation(
+                        activity, rh.gs(R.string.extended_bolus), rh.gs(R.string.ebstopsloop),
                         Runnable {
                             ExtendedBolusDialog().show(childFragmentManager, "Actions")
-                        }, null)
+                        }, null
+                    )
                 })
             }
         }
-        actions_extendedbolus_cancel.setOnClickListener {
-            if (activePlugin.activeTreatments.isInHistoryExtendedBoluslInProgress) {
-                aapsLogger.debug("USER ENTRY: CANCEL EXTENDED BOLUS")
+        binding.extendedBolusCancel.setOnClickListener {
+            if (iobCobCalculator.getExtendedBolus(dateUtil.now()) != null) {
+                uel.log(Action.CANCEL_EXTENDED_BOLUS, Sources.Actions)
                 commandQueue.cancelExtended(object : Callback() {
                     override fun run() {
                         if (!result.success) {
-                            val i = Intent(ctx, ErrorHelperActivity::class.java)
-                            i.putExtra("soundid", R.raw.boluserror)
-                            i.putExtra("status", result.comment)
-                            i.putExtra("title", resourceHelper.gs(R.string.extendedbolusdeliveryerror))
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            ctx.startActivity(i)
+                            ErrorHelperActivity.runAlarm(ctx, result.comment, rh.gs(R.string.extendedbolusdeliveryerror), R.raw.boluserror)
                         }
                     }
                 })
             }
         }
-        actions_settempbasal.setOnClickListener {
-            TempBasalDialog().show(childFragmentManager, "Actions")
+        binding.setTempBasal.setOnClickListener {
+            activity?.let { activity ->
+                protectionCheck.queryProtection(
+                    activity,
+                    ProtectionCheck.Protection.BOLUS,
+                    UIRunnable { TempBasalDialog().show(childFragmentManager, "Actions") })
+            }
         }
-        actions_canceltempbasal.setOnClickListener {
-            if (activePlugin.activeTreatments.isTempBasalInProgress) {
-                aapsLogger.debug("USER ENTRY: CANCEL TEMP BASAL")
+        binding.cancelTempBasal.setOnClickListener {
+            if (iobCobCalculator.getTempBasalIncludingConvertedExtended(dateUtil.now()) != null) {
+                uel.log(Action.CANCEL_TEMP_BASAL, Sources.Actions)
                 commandQueue.cancelTempBasal(true, object : Callback() {
                     override fun run() {
                         if (!result.success) {
-                            val i = Intent(ctx, ErrorHelperActivity::class.java)
-                            i.putExtra("soundid", R.raw.boluserror)
-                            i.putExtra("status", result.comment)
-                            i.putExtra("title", resourceHelper.gs(R.string.tempbasaldeliveryerror))
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            ctx.startActivity(i)
+                            ErrorHelperActivity.runAlarm(ctx, result.comment, rh.gs(R.string.tempbasaldeliveryerror), R.raw.boluserror)
                         }
                     }
                 })
             }
         }
-        actions_fill.setOnClickListener {
+        binding.fill.setOnClickListener {
             activity?.let { activity ->
                 protectionCheck.queryProtection(activity, ProtectionCheck.Protection.BOLUS, UIRunnable { FillDialog().show(childFragmentManager, "FillDialog") })
             }
         }
-        actions_historybrowser.setOnClickListener { startActivity(Intent(context, HistoryBrowseActivity::class.java)) }
-        actions_tddstats.setOnClickListener { startActivity(Intent(context, TDDStatsActivity::class.java)) }
-        actions_bgcheck.setOnClickListener {
+        binding.historyBrowser.setOnClickListener { startActivity(Intent(context, HistoryBrowseActivity::class.java)) }
+        binding.tddStats.setOnClickListener { startActivity(Intent(context, TDDStatsActivity::class.java)) }
+        binding.bgCheck.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.BGCHECK, R.string.careportal_bgcheck).show(childFragmentManager, "Actions")
         }
-        actions_cgmsensorinsert.setOnClickListener {
+        binding.cgmSensorInsert.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.SENSOR_INSERT, R.string.careportal_cgmsensorinsert).show(childFragmentManager, "Actions")
         }
-        actions_pumpbatterychange.setOnClickListener {
+        binding.pumpBatteryChange.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.BATTERY_CHANGE, R.string.careportal_pumpbatterychange).show(childFragmentManager, "Actions")
         }
-        actions_note.setOnClickListener {
+        binding.note.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.NOTE, R.string.careportal_note).show(childFragmentManager, "Actions")
         }
-        actions_exercise.setOnClickListener {
+        binding.exercise.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.EXERCISE, R.string.careportal_exercise).show(childFragmentManager, "Actions")
         }
-        actions_question.setOnClickListener {
+        binding.question.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.QUESTION, R.string.careportal_question).show(childFragmentManager, "Actions")
         }
-        actions_announcement.setOnClickListener {
+        binding.announcement.setOnClickListener {
             CareDialog().setOptions(CareDialog.EventType.ANNOUNCEMENT, R.string.careportal_announcement).show(childFragmentManager, "Actions")
         }
 
@@ -178,28 +200,24 @@ class ActionsFragment : DaggerFragment() {
         super.onResume()
         disposable += rxBus
             .toObservable(EventInitializationChanged::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
-        disposable += rxBus
-            .toObservable(EventRefreshOverview::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateGui() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventExtendedBolusChange::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateGui() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventTempBasalChange::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateGui() }, fabricPrivacy::logException)
         disposable += rxBus
             .toObservable(EventCustomActionsChanged::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateGui() }, fabricPrivacy::logException)
         disposable += rxBus
-            .toObservable(EventCareportalEventChange::class.java)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ updateGui() }, { fabricPrivacy.logException(it) })
+            .toObservable(EventTherapyEventChange::class.java)
+            .observeOn(aapsSchedulers.main)
+            .subscribe({ updateGui() }, fabricPrivacy::logException)
         updateGui()
     }
 
@@ -209,64 +227,77 @@ class ActionsFragment : DaggerFragment() {
         disposable.clear()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     @Synchronized
     fun updateGui() {
 
         val profile = profileFunction.getProfile()
         val pump = activePlugin.activePump
 
-        actions_profileswitch?.visibility = (
-            activePlugin.activeProfileInterface.profile != null &&
+        binding.profileSwitch.visibility = (
+            activePlugin.activeProfileSource.profile != null &&
                 pump.pumpDescription.isSetBasalProfileCapable &&
-                pump.isInitialized &&
-                !pump.isSuspended).toVisibility()
+                pump.isInitialized() &&
+                !pump.isSuspended() &&
+                !loop.isDisconnected).toVisibility()
 
-        if (!pump.pumpDescription.isExtendedBolusCapable || !pump.isInitialized || pump.isSuspended || pump.isFakingTempsByExtendedBoluses) {
-            actions_extendedbolus?.visibility = View.GONE
-            actions_extendedbolus_cancel?.visibility = View.GONE
+        if (!pump.pumpDescription.isExtendedBolusCapable || !pump.isInitialized() || pump.isSuspended() || loop.isDisconnected || pump.isFakingTempsByExtendedBoluses || config.NSCLIENT) {
+            binding.extendedBolus.visibility = View.GONE
+            binding.extendedBolusCancel.visibility = View.GONE
         } else {
-            val activeExtendedBolus = activePlugin.activeTreatments.getExtendedBolusFromHistory(System.currentTimeMillis())
-            if (activeExtendedBolus != null) {
-                actions_extendedbolus?.visibility = View.GONE
-                actions_extendedbolus_cancel?.visibility = View.VISIBLE
+            val activeExtendedBolus = repository.getExtendedBolusActiveAt(dateUtil.now()).blockingGet()
+            if (activeExtendedBolus is ValueWrapper.Existing) {
+                binding.extendedBolus.visibility = View.GONE
+                binding.extendedBolusCancel.visibility = View.VISIBLE
                 @Suppress("SetTextI18n")
-                actions_extendedbolus_cancel?.text = resourceHelper.gs(R.string.cancel) + " " + activeExtendedBolus.toStringMedium()
+                binding.extendedBolusCancel.text = rh.gs(R.string.cancel) + " " + activeExtendedBolus.value.toStringMedium(dateUtil)
             } else {
-                actions_extendedbolus?.visibility = View.VISIBLE
-                actions_extendedbolus_cancel?.visibility = View.GONE
+                binding.extendedBolus.visibility = View.VISIBLE
+                binding.extendedBolusCancel.visibility = View.GONE
             }
         }
 
-        if (!pump.pumpDescription.isTempBasalCapable || !pump.isInitialized || pump.isSuspended) {
-            actions_settempbasal?.visibility = View.GONE
-            actions_canceltempbasal?.visibility = View.GONE
+        if (!pump.pumpDescription.isTempBasalCapable || !pump.isInitialized() || pump.isSuspended() || loop.isDisconnected || config.NSCLIENT) {
+            binding.setTempBasal.visibility = View.GONE
+            binding.cancelTempBasal.visibility = View.GONE
         } else {
-            val activeTemp = activePlugin.activeTreatments.getTempBasalFromHistory(System.currentTimeMillis())
+            val activeTemp = iobCobCalculator.getTempBasalIncludingConvertedExtended(System.currentTimeMillis())
             if (activeTemp != null) {
-                actions_settempbasal?.visibility = View.GONE
-                actions_canceltempbasal?.visibility = View.VISIBLE
+                binding.setTempBasal.visibility = View.GONE
+                binding.cancelTempBasal.visibility = View.VISIBLE
                 @Suppress("SetTextI18n")
-                actions_canceltempbasal?.text = resourceHelper.gs(R.string.cancel) + " " + activeTemp.toStringShort()
+                binding.cancelTempBasal.text = rh.gs(R.string.cancel) + " " + activeTemp.toStringShort()
             } else {
-                actions_settempbasal?.visibility = View.VISIBLE
-                actions_canceltempbasal?.visibility = View.GONE
+                binding.setTempBasal.visibility = View.VISIBLE
+                binding.cancelTempBasal.visibility = View.GONE
             }
         }
         val activeBgSource = activePlugin.activeBgSource
-        actions_historybrowser.visibility = (profile != null).toVisibility()
-        actions_fill?.visibility = (pump.pumpDescription.isRefillingCapable && pump.isInitialized && !pump.isSuspended).toVisibility()
-        actions_pumpbatterychange?.visibility = (pump.pumpDescription.isBatteryReplaceable || (pump is OmnipodPumpPlugin && pump.isUseRileyLinkBatteryLevel && pump.isBatteryChangeLoggingEnabled)).toVisibility()
-        actions_temptarget?.visibility = (profile != null && config.APS).toVisibility()
-        actions_tddstats?.visibility = pump.pumpDescription.supportsTDDs.toVisibility()
+        binding.historyBrowser.visibility = (profile != null).toVisibility()
+        binding.fill.visibility = (pump.pumpDescription.isRefillingCapable && pump.isInitialized() && !pump.isSuspended()).toVisibility()
+        binding.pumpBatteryChange.visibility = (pump.pumpDescription.isBatteryReplaceable || pump.isBatteryChangeLoggingEnabled()).toVisibility()
+        binding.tempTarget.visibility = (profile != null && !loop.isDisconnected).toVisibility()
+        binding.tddStats.visibility = pump.pumpDescription.supportsTDDs.toVisibility()
+        val isPatchPump = pump.pumpDescription.isPatchPump
+        binding.status.apply {
+            cannulaOrPatch.text = if (isPatchPump) rh.gs(R.string.patch_pump) else rh.gs(R.string.cannula)
+            val imageResource = if (isPatchPump) R.drawable.ic_patch_pump_outline else R.drawable.ic_cp_age_cannula
+            cannulaOrPatch.setCompoundDrawablesWithIntrinsicBounds(imageResource, 0, 0, 0)
+            batteryLayout.visibility = (!isPatchPump || pump.pumpDescription.useHardwareLink).toVisibility()
 
-        if (!config.NSCLIENT) {
-            statusLightHandler.updateStatusLights(careportal_canulaage, careportal_insulinage, careportal_reservoirlevel, careportal_sensorage, careportal_sensorlevel, careportal_pbage, careportal_batterylevel)
-            careportal_senslevellabel?.text = if (activeBgSource.sensorBatteryLevel == -1) "" else resourceHelper.gs(R.string.careportal_level_label)
-        } else {
-            statusLightHandler.updateStatusLights(careportal_canulaage, careportal_insulinage, null, careportal_sensorage, null, careportal_pbage, null)
-            careportal_senslevellabel?.text = ""
-            careportal_inslevellabel?.text = ""
-            careportal_pblevellabel?.text = ""
+            if (!config.NSCLIENT) {
+                statusLightHandler.updateStatusLights(cannulaAge, insulinAge, reservoirLevel, sensorAge, sensorLevel, pbAge, batteryLevel)
+                sensorLevelLabel.text = if (activeBgSource.sensorBatteryLevel == -1) "" else rh.gs(R.string.careportal_level_label)
+            } else {
+                statusLightHandler.updateStatusLights(cannulaAge, insulinAge, null, sensorAge, null, pbAge, null)
+                sensorLevelLabel.text = ""
+                insulinLevelLabel.text = ""
+                pbLevelLabel.text = ""
+            }
         }
         checkPumpCustomActions()
 
@@ -274,18 +305,19 @@ class ActionsFragment : DaggerFragment() {
 
     private fun checkPumpCustomActions() {
         val activePump = activePlugin.activePump
-        val customActions = activePump.customActions ?: return
+        val customActions = activePump.getCustomActions() ?: return
         val currentContext = context ?: return
         removePumpCustomActions()
 
         for (customAction in customActions) {
             if (!customAction.isEnabled) continue
 
-            val btn = SingleClickButton(currentContext, null, android.R.attr.buttonStyle)
-            btn.text = resourceHelper.gs(customAction.name)
+            val btn = SingleClickButton(currentContext, null, R.attr.customBtnStyle)
+            btn.text = rh.gs(customAction.name)
 
             val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f)
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f
+            )
             layoutParams.setMargins(20, 8, 20, 8) // 10,3,10,3
 
             btn.layoutParams = layoutParams
@@ -298,15 +330,15 @@ class ActionsFragment : DaggerFragment() {
             val top = activity?.let { ContextCompat.getDrawable(it, customAction.iconResourceId) }
             btn.setCompoundDrawablesWithIntrinsicBounds(null, top, null, null)
 
-            action_buttons_layout?.addView(btn)
+            binding.buttonsLayout.addView(btn)
 
-            this.pumpCustomActions[resourceHelper.gs(customAction.name)] = customAction
+            this.pumpCustomActions[rh.gs(customAction.name)] = customAction
             this.pumpCustomButtons.add(btn)
         }
     }
 
     private fun removePumpCustomActions() {
-        for (customButton in pumpCustomButtons) action_buttons_layout?.removeView(customButton)
+        for (customButton in pumpCustomButtons) binding.buttonsLayout.removeView(customButton)
         pumpCustomButtons.clear()
     }
 }

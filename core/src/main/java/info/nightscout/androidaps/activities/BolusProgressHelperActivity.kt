@@ -9,6 +9,7 @@ class BolusProgressHelperActivity : DialogAppCompatActivity() {
         BolusProgressDialog()
             .setHelperActivity(this)
             .setInsulin(intent.getDoubleExtra("insulin", 0.0))
+            .setId(intent.getLongExtra("id", 0L))
             .show(supportFragmentManager, "BolusProgress")
     }
 }

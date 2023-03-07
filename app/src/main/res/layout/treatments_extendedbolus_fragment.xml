@@ -1,20 +1,32 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="info.nightscout.androidaps.plugins.treatments.fragments.TreatmentsExtendedBolusesFragment">
+    android:orientation="vertical"
+    tools:context="info.nightscout.androidaps.activities.fragments.TreatmentsExtendedBolusesFragment">
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/no_records_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingVertical="50dp"
+        android:text="@string/no_records_available"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:visibility="gone" />
+
+    <info.nightscout.androidaps.extensions.EmptyRecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_alignParentTop="true" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/extendedboluses_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

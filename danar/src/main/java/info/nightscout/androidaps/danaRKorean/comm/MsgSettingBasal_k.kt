@@ -2,7 +2,7 @@ package info.nightscout.androidaps.danaRKorean.comm
 
 import dagger.android.HasAndroidInjector
 import info.nightscout.androidaps.danar.comm.MessageBase
-import info.nightscout.androidaps.logging.LTag
+import info.nightscout.shared.logging.LTag
 import java.util.*
 
 class MsgSettingBasal_k(
@@ -10,7 +10,7 @@ class MsgSettingBasal_k(
 ) : MessageBase(injector) {
 
     init {
-        SetCommand(0x3202)
+        setCommand(0x3202)
         aapsLogger.debug(LTag.PUMPCOMM, "New message")
     }
 

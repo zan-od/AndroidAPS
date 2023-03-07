@@ -1,7 +1,10 @@
 package info.nightscout.androidaps.dialogs
 
+import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
+import android.os.HandlerThread
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,22 +14,27 @@ import dagger.android.support.DaggerDialogFragment
 import info.nightscout.androidaps.activities.ErrorHelperActivity
 import info.nightscout.androidaps.core.R
 import info.nightscout.androidaps.core.databinding.DialogErrorBinding
-import info.nightscout.androidaps.logging.AAPSLogger
+import info.nightscout.androidaps.database.entities.UserEntry.Action
+import info.nightscout.androidaps.database.entities.UserEntry.Sources
+import info.nightscout.androidaps.logging.UserEntryLogger
 import info.nightscout.androidaps.services.AlarmSoundServiceHelper
 import info.nightscout.androidaps.utils.T
+import info.nightscout.shared.logging.AAPSLogger
 import javax.inject.Inject
 
 class ErrorDialog : DaggerDialogFragment() {
 
     @Inject lateinit var alarmSoundServiceHelper: AlarmSoundServiceHelper
     @Inject lateinit var aapsLogger: AAPSLogger
+    @Inject lateinit var uel: UserEntryLogger
+    @Inject lateinit var ctx: Context
 
     var helperActivity: ErrorHelperActivity? = null
     var status: String = ""
     var title: String = ""
     var sound: Int = 0
 
-    private var loopHandler = Handler()
+    private val handler = Handler(HandlerThread(this::class.simpleName + "Handler").also { it.start() }.looper)
 
     private var _binding: DialogErrorBinding? = null
 
@@ -34,8 +42,13 @@ class ErrorDialog : DaggerDialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val theme: Resources.Theme? = context?.theme
+        theme?.applyStyle(R.style.AppTheme_NoActionBar, true)
+
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         isCancelable = true
@@ -56,17 +69,18 @@ class ErrorDialog : DaggerDialogFragment() {
 
         binding.title.text = title
         binding.ok.setOnClickListener {
-            aapsLogger.debug("USER ENTRY: Error dialog ok button pressed")
+            uel.log(Action.ERROR_DIALOG_OK, Sources.Unknown)
+            stopAlarm("Dismiss")
             dismiss()
         }
         binding.mute.setOnClickListener {
-            aapsLogger.debug("USER ENTRY: Error dialog mute button pressed")
-            stopAlarm()
+            uel.log(Action.ERROR_DIALOG_MUTE, Sources.Unknown)
+            stopAlarm("Mute")
         }
         binding.mute5min.setOnClickListener {
-            aapsLogger.debug("USER ENTRY: Error dialog mute 5 min button pressed")
-            stopAlarm()
-            loopHandler.postDelayed(this::startAlarm, T.mins(5).msecs())
+            uel.log(Action.ERROR_DIALOG_MUTE_5MIN, Sources.Unknown)
+            stopAlarm("Mute 5 min")
+            handler.postDelayed(this::startAlarm, T.mins(5).msecs())
         }
         startAlarm()
     }
@@ -96,15 +110,14 @@ class ErrorDialog : DaggerDialogFragment() {
     override fun dismiss() {
         super.dismissAllowingStateLoss()
         helperActivity?.finish()
-        loopHandler.removeCallbacksAndMessages(null)
-        stopAlarm()
+        handler.removeCallbacksAndMessages(null)
     }
 
     private fun startAlarm() {
         if (sound != 0)
-            context?.let { context -> alarmSoundServiceHelper.startAlarm(context, sound) }
+            alarmSoundServiceHelper.startAlarm(ctx, sound, "$title:$status")
     }
 
-    private fun stopAlarm() =
-        context?.let { context -> alarmSoundServiceHelper.stopService(context) }
+    private fun stopAlarm(reason: String) =
+        alarmSoundServiceHelper.stopService(ctx, reason)
 }

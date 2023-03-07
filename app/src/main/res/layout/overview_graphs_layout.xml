@@ -11,32 +11,26 @@
         android:layout_weight="1">
 
         <com.jjoe64.graphview.GraphView
-            android:id="@+id/overview_bggraph"
+            android:id="@+id/bg_graph"
             android:layout_width="wrap_content"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:contentDescription="@string/a11y_graph" />
 
         <ImageButton
-            android:id="@+id/overview_chartMenuButton"
+            android:id="@+id/chart_menu_button"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:contentDescription="@string/chartmenu"
+            android:layout_marginEnd="3dp"
+            android:contentDescription="@string/chart_menu"
             android:paddingTop="5dp"
             app:srcCompat="@drawable/ic_arrow_drop_down_white_24dp" />
 
-        <TextView
-            android:id="@+id/overview_iobcalculationprogess"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
     </RelativeLayout>
 
-
     <LinearLayout
-        android:id="@+id/overview_iobgraph"
+        android:id="@+id/iob_graph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />

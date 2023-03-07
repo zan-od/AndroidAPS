@@ -1,14 +1,13 @@
 package info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.data.encoding;
 
-import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import info.nightscout.androidaps.logging.StacktraceLoggerWrapper;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.RileyLinkCommunicationException;
 import info.nightscout.androidaps.plugins.pump.common.hw.rileylink.ble.defs.RileyLinkBLEError;
 import info.nightscout.androidaps.plugins.pump.common.utils.ByteUtil;
+import info.nightscout.shared.logging.AAPSLogger;
 
 /**
  * Created by andy on 11/24/18.
@@ -16,8 +15,11 @@ import info.nightscout.androidaps.plugins.pump.common.utils.ByteUtil;
 
 public class Encoding4b6bGeoff extends Encoding4b6bAbstract {
 
-    public static final Logger LOG = StacktraceLoggerWrapper.getLogger(Encoding4b6bGeoff.class);
+    private final AAPSLogger aapsLogger;
 
+    public Encoding4b6bGeoff(AAPSLogger aapsLogger) {
+        this.aapsLogger = aapsLogger;
+    }
 
     @Override public byte[] encode4b6b(byte[] data) {
         // if ((data.length % 2) != 0) {
@@ -121,7 +123,7 @@ public class Encoding4b6bGeoff extends Encoding4b6bAbstract {
                      */
                 } else {
                     // LOG.debug(String.format("i=%d,x=%08X, coding error: highcode=0x%02X, lowcode=0x%02X, %d bits remaining",i,x,highcode,lowcode,availableBits));
-                    errorMessageBuilder.append(String.format(
+                    errorMessageBuilder.append(String.format(Locale.ENGLISH,
                             "decode4b6b: i=%d,x=%08X, coding error: highcode=0x%02X, lowcode=0x%02X, %d bits remaining.\n",
                             i, x, highcode, lowcode, availableBits));
                     codingErrors++;
@@ -149,7 +151,7 @@ public class Encoding4b6bGeoff extends Encoding4b6bAbstract {
         if (codingErrors > 0) {
             // LOG.error("decode4b6b: " + codingErrors + " coding errors encountered.");
             errorMessageBuilder.append("decode4b6b: " + codingErrors + " coding errors encountered.");
-            writeError(LOG, raw, errorMessageBuilder.toString());
+            writeError(aapsLogger, raw, errorMessageBuilder.toString());
             throw new RileyLinkCommunicationException(RileyLinkBLEError.CodingErrors, errorMessageBuilder.toString());
         }
         return rval;
