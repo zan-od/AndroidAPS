@@ -228,7 +228,7 @@ class DetermineBasalAdapterSMBDynamicISFJS internal constructor(private val scri
         //}
         this.profile.put("remainingCarbsCap", SMBDefaults.remainingCarbsCap)
         this.profile.put("enableUAM", uamAllowed)
-        this.profile.put("A52_risk_enable", SMBDefaults.A52_risk_enable)
+        this.profile.put("A52_risk_enable", sp.getBoolean(R.string.key_a52_risk_enable, SMBDefaults.A52_risk_enable))
         val smbEnabled = sp.getBoolean(R.string.key_use_smb, false)
         this.profile.put("SMBInterval", sp.getInt(R.string.key_smb_interval, SMBDefaults.SMBInterval))
         this.profile.put("enableSMB_with_COB", smbEnabled && sp.getBoolean(R.string.key_enableSMB_with_COB, false))

@@ -22,6 +22,7 @@
     <string name="key_lgs_threshold" translatable="false">lgsThreshold</string>
     <string name="key_DynISFAdjust" translatable="false">DynISFAdjust</string>
     <string name="key_adjust_sensitivity" translatable="false">dynisf_adjust_sensitivity</string>
+    <string name="key_a52_risk_enable" translatable="false">a52_risk_enable</string>
 
     <string name="dynisf_adjust_sensitivity">Enable TDD based sensitivity ratio for basal and glucose target modification</string>
     <string name="dynisf_adjust_sensitivity_summary">Uses the last 24h TDD/7D TDD to calculate sensitivity ratio used for increasing or decreasing basal rate, and also adjust glucose target if these options are enabled, in the same way Autosens does. It is recommended to start with this option turned off</string>
@@ -104,6 +105,8 @@
     <string name="carbs_req_threshold_summary">Minimum grams of carbs to display a carbs suggestion alert. Carbs suggestions below this number will not trigger a notification.</string>
     <string name="lgs_threshold_summary">BG value below which insulin is suspended. Default value uses standard target model. User can set value between 60mg/dl (3.3mmol/l) and 100mg/dl(5.5mmol/l). Values below 65/3.6 result in use of default model</string>
     <string name="lgs_threshold_title">BG level below which low glucose suspend occurs</string>
+    <string name="a52_risk_enable">A52 risk enable</string>
+    <string name="a52_risk_enable_summary">Flag to disable Medtronic A52 error safety (should lead to more aggressive bolusing)</string>
 
     <string name="increasing_max_basal">Increasing max basal value because setting is lower than your max basal in profile</string>
     <string name="max_basal_multiplier">max basal multiplier</string>
