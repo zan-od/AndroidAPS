@@ -40,8 +40,11 @@ class AuthRequest internal constructor(
     }
 
     private fun codeIsValid(toValidate: String): Boolean {
-        //otp.checkOTP(toValidate) == OneTimePasswordValidationResult.OK
-        return toValidate == confirmCode
+        return if (otp.isEnabled()) {
+            otp.checkOTP(toValidate) == OneTimePasswordValidationResult.OK
+        } else {
+            confirmCode == toValidate
+        }
     }
 
     fun action(codeReceived: String) {
