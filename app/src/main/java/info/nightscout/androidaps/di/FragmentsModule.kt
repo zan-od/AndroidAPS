@@ -27,6 +27,7 @@ import info.nightscout.androidaps.plugins.pump.virtual.VirtualPumpFragment
 import info.nightscout.androidaps.plugins.source.BGSourceFragment
 import info.nightscout.androidaps.activities.fragments.*
 import info.nightscout.androidaps.plugins.general.automation.dialogs.*
+import info.nightscout.androidaps.plugins.general.externalAppCommunicator.ExternalAppCommunicatorFragment
 import info.nightscout.androidaps.utils.protection.PasswordCheck
 
 @Module
@@ -53,6 +54,7 @@ abstract class FragmentsModule {
     @ContributesAndroidInjector abstract fun contributesMaintenanceFragment(): MaintenanceFragment
     @ContributesAndroidInjector abstract fun contributesNSClientFragment(): NSClientFragment
     @ContributesAndroidInjector abstract fun contributesSmsCommunicatorFragment(): SmsCommunicatorFragment
+    @ContributesAndroidInjector abstract fun contributesExternalAppCommunicatorFragment(): ExternalAppCommunicatorFragment
     @ContributesAndroidInjector abstract fun contributesWearFragment(): WearFragment
 
     @ContributesAndroidInjector abstract fun contributesTidepoolFragment(): TidepoolFragment

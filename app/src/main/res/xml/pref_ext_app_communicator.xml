@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:validate="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="@string/key_ext_app_communicator_settings"
+        android:title="@string/ext_app_communicator"
+        app:initialExpandedChildrenCount="0">
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

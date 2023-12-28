@@ -42,5 +42,9 @@ interface Intents {
 
         // Broadcast status
         const val AAPS_BROADCAST = "info.nightscout.androidaps.status"
+
+        // sending pump commands from other apps
+        const val EXTERNAL_COMMAND_RECEIVED = "info.nightscout.androidaps.EXTERNAL_COMMAND"
+        const val EXTERNAL_RESPONSE_SENT = "info.nightscout.androidaps.EXTERNAL_RESPONSE"
     }
 }

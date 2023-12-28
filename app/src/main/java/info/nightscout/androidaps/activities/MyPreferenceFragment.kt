@@ -50,6 +50,7 @@ import info.nightscout.androidaps.utils.protection.PasswordCheck
 import info.nightscout.androidaps.utils.protection.ProtectionCheck.ProtectionType.*
 import info.nightscout.androidaps.interfaces.ResourceHelper
 import info.nightscout.androidaps.plugins.aps.openAPSSMBDynamicISF.OpenAPSSMBDynamicISFPlugin
+import info.nightscout.androidaps.plugins.general.externalAppCommunicator.ExternalAppCommunicatorPlugin
 import info.nightscout.shared.SafeParse
 import info.nightscout.shared.sharedPreferences.SP
 import javax.inject.Inject
@@ -93,6 +94,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
     @Inject lateinit var glunovoPlugin: GlunovoPlugin
     @Inject lateinit var aidexPlugin: AidexPlugin
     @Inject lateinit var smsCommunicatorPlugin: SmsCommunicatorPlugin
+    @Inject lateinit var extAppCommunicatorPlugin: ExternalAppCommunicatorPlugin
     @Inject lateinit var statusLinePlugin: StatusLinePlugin
     @Inject lateinit var tidepoolPlugin: TidepoolPlugin
     @Inject lateinit var virtualPumpPlugin: VirtualPumpPlugin
@@ -191,6 +193,7 @@ class MyPreferenceFragment : PreferenceFragmentCompat(), OnSharedPreferenceChang
             addPreferencesFromResourceIfEnabled(nsClientPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(tidepoolPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(smsCommunicatorPlugin, rootKey)
+            addPreferencesFromResourceIfEnabled(extAppCommunicatorPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(automationPlugin, rootKey)
             addPreferencesFromResourceIfEnabled(autotunePlugin, rootKey)
             addPreferencesFromResourceIfEnabled(wearPlugin, rootKey)

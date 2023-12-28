@@ -53,6 +53,7 @@ import javax.inject.Singleton
         OverviewModule::class,
         DataClassesModule::class,
         SMSModule::class,
+        ExternalAppModule::class,
         UIModule::class,
         CoreModule::class,
         DanaModule::class,

@@ -1267,5 +1267,11 @@
     <string name="blocked_by_connectivity">Blocked by connectivity options</string>
     <string name="no_watch_connected">(No Watch Connected)</string>
 
+    <!-- External Application Communicator -->
+    <string name="ext_app_communicator">App Communicator</string>
+    <string name="ext_app_communicator_short_name">ExtAppComm</string>
+    <string name="ext_app_communicator_description">Remote control AndroidAPS using external application on current device (via intents)</string>
+    <string name="key_ext_app_communicator_settings" translatable="false">ext_app_communicator</string>
+
 
 </resources>

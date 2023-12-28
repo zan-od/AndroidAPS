@@ -6,6 +6,7 @@ import android.provider.Telephony
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import dagger.android.DaggerBroadcastReceiver
+import info.nightscout.androidaps.plugins.general.externalAppCommunicator.ExternalAppCommunicatorPlugin
 import info.nightscout.androidaps.plugins.general.smsCommunicator.SmsCommunicatorPlugin
 import info.nightscout.androidaps.plugins.source.*
 import info.nightscout.androidaps.utils.extensions.copyDouble
@@ -67,6 +68,12 @@ open class DataReceiver : DaggerBroadcastReceiver() {
             Intents.AIDEX_NEW_BG_ESTIMATE             ->
                 OneTimeWorkRequest.Builder(AidexPlugin.AidexWorker::class.java)
                     .setInputData(dataWorker.storeInputData(bundle, intent.action)).build()
+            Intents.EXTERNAL_COMMAND_RECEIVED ->
+                OneTimeWorkRequest.Builder(ExternalAppCommunicatorPlugin.ExternalAppCommunicatorWorker::class.java)
+                    .setInputData(Data.Builder().also {
+                        it.copyString("user", bundle)
+                        it.copyString("text", bundle)
+                    }.build()).build()
             else                                      -> null
         }?.let { request -> dataWorker.enqueue(request) }
     }
